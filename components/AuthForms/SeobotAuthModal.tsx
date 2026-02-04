@@ -9,6 +9,7 @@ import ButtonSeobot from '../ui/ButtonSeobot'
 import { createClient } from '@/utils/supabase/client'
 import { trackEvent } from '@/lib/posthog'
 import { trackMeta } from '@/utils/trackMeta'
+import { gtagEvent, trackGoogleAdsLeadConversion } from '@/lib/gtag'
 
 interface SeobotAuthModalProps {
   isOpen: boolean
@@ -16,6 +17,21 @@ interface SeobotAuthModalProps {
 }
 
 const REDIRECT_DELAY_MS = 1000
+
+const GUEST_ID_COOKIE_NAME = 'seobot_guest_id'
+
+function parseCookie(): Record<string, string> {
+  if (typeof document === 'undefined') return {}
+  return document.cookie.split(';').reduce<Record<string, string>>((acc, part) => {
+    const [rawKey, ...rest] = part.split('=')
+    if (!rawKey) return acc
+    const key = rawKey.trim()
+    const value = rest.join('=')
+    if (!key) return acc
+    acc[key] = value
+    return acc
+  }, {})
+}
 
 export default function SeobotAuthModal({ isOpen, onClose }: SeobotAuthModalProps) {
   const [fullName, setFullName] = useState('')
@@ -49,6 +65,11 @@ export default function SeobotAuthModal({ isOpen, onClose }: SeobotAuthModalProp
     setIsSubmitting(true)
     setFormError(null)
 
+    // Track submit click separately from successful lead conversion
+    gtagEvent('try_now_continue_click', {
+      source: 'try_now_modal',
+    })
+
     try {
       // Track lead submission attempt
       trackEvent('try_now_lead_submitted', {
@@ -61,12 +82,36 @@ export default function SeobotAuthModal({ isOpen, onClose }: SeobotAuthModalProp
       try {
         if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
           const supabase = createClient()
-          // Use insert (not upsert) so the same email/name can be submitted multiple times.
-          const { error } = await supabase.from('guest_users').insert({
-            email,
-            full_name: fullName,
-            source: 'try_now_modal_lead',
-          })
+
+          const cookies = parseCookie()
+          const existingGuestId = cookies[GUEST_ID_COOKIE_NAME]
+
+          let error = null as unknown as { message: string; code?: string | null } | null
+
+          if (existingGuestId) {
+            // Update existing anonymous guest row with identified lead details
+            const { error: updateError } = await supabase
+              .from('guest_users')
+              .update({
+                email,
+                full_name: fullName,
+                source: 'try_now_modal_lead',
+                last_seen_at: new Date().toISOString(),
+              })
+              .eq('id', existingGuestId)
+
+            error = updateError as typeof error
+          } else {
+            // Fallback: create a new guest row if we don't have an anonymous record
+            const { error: insertError } = await supabase.from('guest_users').insert({
+              email,
+              full_name: fullName,
+              source: 'try_now_modal_lead',
+            })
+
+            error = insertError as typeof error
+          }
+
           if (error) {
             trackEvent('signup_failed', {
               source: 'try_now_modal',
@@ -81,6 +126,10 @@ export default function SeobotAuthModal({ isOpen, onClose }: SeobotAuthModalProp
             })
 
             trackMeta('Lead', { email })
+            // Google Ads Lead conversion (only fires when conversion label + Ads ID are configured)
+            trackGoogleAdsLeadConversion({
+              email,
+            })
           }
         }
       } catch (storageError) {
@@ -160,8 +209,11 @@ export default function SeobotAuthModal({ isOpen, onClose }: SeobotAuthModalProp
                         <input
                           type="text"
                           value={fullName}
-                          onChange={(e) => setFullName(e.target.value)}
-                          onFocus={() => trackEvent('form_focused_name', { source: 'try_now_modal' })}
+                        onChange={(e) => setFullName(e.target.value)}
+                        onFocus={() => {
+                          trackEvent('form_focused_name', { source: 'try_now_modal' })
+                          gtagEvent('form_focused_name', { source: 'try_now_modal' })
+                        }}
                           required
                           className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 sm:py-3.5 text-white text-base focus:outline-none focus:border-primary-green transition-colors"
                           placeholder="Enter your full name"
@@ -176,8 +228,11 @@ export default function SeobotAuthModal({ isOpen, onClose }: SeobotAuthModalProp
                         <input
                           type="email"
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          onFocus={() => trackEvent('form_focused_email', { source: 'try_now_modal' })}
+                        onChange={(e) => setEmail(e.target.value)}
+                        onFocus={() => {
+                          trackEvent('form_focused_email', { source: 'try_now_modal' })
+                          gtagEvent('form_focused_email', { source: 'try_now_modal' })
+                        }}
                           required
                           className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 sm:py-3.5 text-white text-base focus:outline-none focus:border-primary-green transition-colors"
                           placeholder="Enter your email"

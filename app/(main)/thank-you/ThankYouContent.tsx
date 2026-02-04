@@ -5,6 +5,7 @@ import { LazyMotion, m } from 'framer-motion'
 import ButtonSeobot from '@/components/ui/ButtonSeobot'
 import { useEffect, useRef } from 'react'
 import { trackMeta, META_CR_KEY } from '@/utils/trackMeta'
+import { gtagEvent, trackGoogleAdsCompleteRegistrationConversion } from '@/lib/gtag'
 
 const loadFeatures = () => import('@/lib/framer-features').then(res => res.domAnimation)
 
@@ -17,6 +18,14 @@ export default function ThankYouContent() {
     hasTracked.current = true
     if (typeof window !== 'undefined') sessionStorage.setItem(META_CR_KEY, '1')
     trackMeta('CompleteRegistration')
+    // Google Ads CompleteRegistration conversion (fires once per session, gated by conversion label + Ads ID)
+    trackGoogleAdsCompleteRegistrationConversion()
+    // Additional gtag event for thank-you page view
+    if (typeof window !== 'undefined') {
+      gtagEvent('thank_you_page_view', {
+        path: window.location.pathname,
+      })
+    }
   }, [])
 
   return (

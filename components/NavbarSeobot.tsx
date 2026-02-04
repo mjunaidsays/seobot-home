@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import ButtonSeobot from './ui/ButtonSeobot'
 import SeobotAuthModal from './AuthForms/SeobotAuthModal'
+import { gtagEvent } from '@/lib/gtag'
 
 export default function NavbarSeobot() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
@@ -56,7 +57,12 @@ export default function NavbarSeobot() {
               <ButtonSeobot
                 variant="primary"
                 size="md"
-                onClick={() => setIsAuthModalOpen(true)}
+                onClick={() => {
+                  setIsAuthModalOpen(true)
+                  gtagEvent('try_now_click', {
+                    location: 'navbar',
+                  })
+                }}
               >
                 Try now
               </ButtonSeobot>

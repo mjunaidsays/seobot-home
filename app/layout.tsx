@@ -10,8 +10,9 @@ import { JetBrains_Mono as FontMono } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import dynamic from 'next/dynamic';
 import { Analytics } from '@vercel/analytics/react';
-import {PostHogProviderComponent} from '@/components/PostHogProvider';
+import { PostHogProviderComponent } from '@/components/PostHogProvider';
 import DelayedMatrixRain from '@/components/DelayedMatrixRain';
+import AttributionCapture from '@/components/AttributionCapture';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -39,6 +40,7 @@ const meta = {
 };
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+const GOOGLE_ADS_ID = process.env.GOOGLE_ADS_ID;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -74,7 +76,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: PropsWithChildren) {
   const CrispWithNoSSR = dynamic(() => import('../components/crisp'));
   return (
-    <html lang="en" className="scroll-smooth scroll-p-16">
+    <html lang="en" className="scroll-smooth scroll-p-16" suppressHydrationWarning>
       <head>
         {PIXEL_ID && (
           <Script
@@ -96,6 +98,27 @@ export default async function RootLayout({ children }: PropsWithChildren) {
             }}
           />
         )}
+        {GOOGLE_ADS_ID && (
+          <>
+            <Script
+              id="google-ads-gtag-src"
+              src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script
+              id="google-ads-gtag-init"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GOOGLE_ADS_ID}');
+                `,
+              }}
+            />
+          </>
+        )}
       </head>
       <body
         className={cn(
@@ -103,9 +126,13 @@ export default async function RootLayout({ children }: PropsWithChildren) {
           fontSans.variable,
           fontMono.variable
         )}
+        data-google-ads-id={GOOGLE_ADS_ID}
       >
         <CrispWithNoSSR />
         <DelayedMatrixRain />
+        <Suspense fallback={null}>
+          <AttributionCapture />
+        </Suspense>
         <PostHogProviderComponent>
           <ThemeProvider
             attribute="class"
@@ -119,7 +146,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
             >
               {children}
             </main>
-            <Suspense>
+            <Suspense fallback={null}>
               <Toaster />
             </Suspense>
           </ThemeProvider>

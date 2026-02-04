@@ -302,30 +302,45 @@ export type Database = {
       guest_users: {
         Row: {
           id: string
-          email: string
+          email: string | null
           full_name: string | null
           created_at: string
           last_seen_at: string
           source: string | null
           converted_user_id: string | null
+          utm_source: string | null
+          utm_medium: string | null
+          utm_campaign: string | null
+          landing_page: string | null
+          referrer: string | null
         }
         Insert: {
           id?: string
-          email: string
+          email?: string | null
           full_name?: string | null
           created_at?: string
           last_seen_at?: string
           source?: string | null
           converted_user_id?: string | null
+          utm_source?: string | null
+          utm_medium?: string | null
+          utm_campaign?: string | null
+          landing_page?: string | null
+          referrer?: string | null
         }
         Update: {
           id?: string
-          email?: string
+          email?: string | null
           full_name?: string | null
           created_at?: string
           last_seen_at?: string
           source?: string | null
           converted_user_id?: string | null
+          utm_source?: string | null
+          utm_medium?: string | null
+          utm_campaign?: string | null
+          landing_page?: string | null
+          referrer?: string | null
         }
         Relationships: [
           {
