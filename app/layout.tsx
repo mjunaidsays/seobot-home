@@ -76,7 +76,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: PropsWithChildren) {
   const CrispWithNoSSR = dynamic(() => import('../components/crisp'));
   return (
-    <html lang="en" className="scroll-smooth scroll-p-16">
+    <html lang="en" className="scroll-smooth scroll-p-16" suppressHydrationWarning>
       <head>
         {PIXEL_ID && (
           <Script
@@ -130,7 +130,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
       >
         <CrispWithNoSSR />
         <DelayedMatrixRain />
-        <AttributionCapture />
+        <Suspense fallback={null}>
+          <AttributionCapture />
+        </Suspense>
         <PostHogProviderComponent>
           <ThemeProvider
             attribute="class"
@@ -144,7 +146,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
             >
               {children}
             </main>
-            <Suspense>
+            <Suspense fallback={null}>
               <Toaster />
             </Suspense>
           </ThemeProvider>

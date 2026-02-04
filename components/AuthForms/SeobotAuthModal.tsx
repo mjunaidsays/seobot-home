@@ -18,6 +18,21 @@ interface SeobotAuthModalProps {
 
 const REDIRECT_DELAY_MS = 1000
 
+const GUEST_ID_COOKIE_NAME = 'seobot_guest_id'
+
+function parseCookie(): Record<string, string> {
+  if (typeof document === 'undefined') return {}
+  return document.cookie.split(';').reduce<Record<string, string>>((acc, part) => {
+    const [rawKey, ...rest] = part.split('=')
+    if (!rawKey) return acc
+    const key = rawKey.trim()
+    const value = rest.join('=')
+    if (!key) return acc
+    acc[key] = value
+    return acc
+  }, {})
+}
+
 export default function SeobotAuthModal({ isOpen, onClose }: SeobotAuthModalProps) {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
@@ -67,12 +82,36 @@ export default function SeobotAuthModal({ isOpen, onClose }: SeobotAuthModalProp
       try {
         if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
           const supabase = createClient()
-          // Use insert (not upsert) so the same email/name can be submitted multiple times.
-          const { error } = await supabase.from('guest_users').insert({
-            email,
-            full_name: fullName,
-            source: 'try_now_modal_lead',
-          })
+
+          const cookies = parseCookie()
+          const existingGuestId = cookies[GUEST_ID_COOKIE_NAME]
+
+          let error = null as unknown as { message: string; code?: string | null } | null
+
+          if (existingGuestId) {
+            // Update existing anonymous guest row with identified lead details
+            const { error: updateError } = await supabase
+              .from('guest_users')
+              .update({
+                email,
+                full_name: fullName,
+                source: 'try_now_modal_lead',
+                last_seen_at: new Date().toISOString(),
+              })
+              .eq('id', existingGuestId)
+
+            error = updateError as typeof error
+          } else {
+            // Fallback: create a new guest row if we don't have an anonymous record
+            const { error: insertError } = await supabase.from('guest_users').insert({
+              email,
+              full_name: fullName,
+              source: 'try_now_modal_lead',
+            })
+
+            error = insertError as typeof error
+          }
+
           if (error) {
             trackEvent('signup_failed', {
               source: 'try_now_modal',

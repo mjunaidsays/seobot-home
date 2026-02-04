@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
+import { createClient } from '@/utils/supabase/client'
 
 type AttributionData = {
   utm_source?: string
@@ -23,6 +24,7 @@ type AttributionData = {
 
 const ATTR_COOKIE_NAME = 'seobot_attr'
 const ATTR_COOKIE_MAX_AGE_DAYS = 90
+const GUEST_ID_COOKIE_NAME = 'seobot_guest_id'
 
 function parseCookie(): Record<string, string> {
   if (typeof document === 'undefined') return {}
@@ -71,11 +73,77 @@ function hasNewAttribution(data: AttributionData): boolean {
   )
 }
 
+async function logAnonymousGuestVisit(base: AttributionData, url: URL) {
+  if (process.env.NODE_ENV === 'development') {
+    // eslint-disable-next-line no-console
+    console.log('logAnonymousGuestVisit called with', base, url.toString())
+  }
+  // Only log when we actually have UTM attribution
+  if (!base.utm_source && !base.utm_medium && !base.utm_campaign) {
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log('logAnonymousGuestVisit: no UTM, aborting')
+    }
+    return
+  }
+
+  try {
+    const cookies = parseCookie()
+    // If we already have a guest_user id for this browser, don't create another anonymous row.
+    if (cookies[GUEST_ID_COOKIE_NAME]) {
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.log('logAnonymousGuestVisit: seobot_guest_id already set, skipping insert')
+      }
+      return
+    }
+
+    const supabase = createClient()
+    const landingPath = url.pathname || '/'
+
+    const { data, error } = await supabase
+      .from('guest_users')
+      .insert({
+      email: null,
+      full_name: null,
+      source: 'anonymous_visit',
+      utm_source: base.utm_source ?? null,
+      utm_medium: base.utm_medium ?? null,
+      utm_campaign: base.utm_campaign ?? null,
+      landing_page: landingPath,
+      referrer: base.initial_referrer ?? (typeof document !== 'undefined' ? document.referrer || null : null),
+      })
+      .select('id')
+      .single()
+
+    if (error) {
+      throw error
+    }
+
+    if (data && typeof document !== 'undefined') {
+      const maxAgeSeconds = ATTR_COOKIE_MAX_AGE_DAYS * 24 * 60 * 60
+      document.cookie = `${GUEST_ID_COOKIE_NAME}=${data.id}; Path=/; Max-Age=${maxAgeSeconds}; SameSite=Lax`
+    }
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.error('AttributionCapture: failed to log anonymous guest visit', error)
+    }
+  }
+}
+
 export default function AttributionCapture() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
   useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log('AttributionCapture: effect fired', {
+        pathname,
+        rawSearch: typeof window !== 'undefined' ? window.location.search : undefined,
+      })
+    }
     if (!pathname || !searchParams) return
     if (typeof window === 'undefined') return
 
@@ -98,6 +166,13 @@ export default function AttributionCapture() {
     const existing = getAttributionFromCookie()
     const hasAttributionParams = hasNewAttribution(current)
 
+    if (process.env.NODE_ENV === 'development' && existing) {
+      // eslint-disable-next-line no-console
+      console.log('AttributionCapture: existing attribution cookie present, skipping first-touch branch (no DB insert)', {
+        hasGuestId: typeof document !== 'undefined' && !!parseCookie()[GUEST_ID_COOKIE_NAME],
+      })
+    }
+
     // Last non-direct-touch: only overwrite when new UTMs/click IDs are present
     if (!existing) {
       const base: AttributionData = {
@@ -106,9 +181,17 @@ export default function AttributionCapture() {
         last_touch_ts: now,
         first_landing_url: url.href,
         last_landing_url: url.href,
-        initial_referrer: document.referrer || undefined,
+        initial_referrer: typeof document !== 'undefined' ? document.referrer || undefined : undefined,
+      }
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.log('AttributionCapture: first-touch base', base)
       }
       setAttributionCookie(base)
+
+      // Also log a corresponding anonymous guest row for this first-touch visit
+      void logAnonymousGuestVisit(base, url)
+
       if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console
         console.debug('AttributionCapture: initial attribution set', base)
@@ -144,6 +227,16 @@ export default function AttributionCapture() {
     }
 
     setAttributionCookie(updated)
+
+    // We have attribution cookie but no guest_users row yet (hasGuestId: false) — insert one
+    // so this visit is still recorded (e.g. cookie was set on a prior direct visit, now they have UTMs)
+    if (hasAttributionParams) {
+      const cookies = parseCookie()
+      if (!cookies[GUEST_ID_COOKIE_NAME]) {
+        void logAnonymousGuestVisit(updated, url)
+      }
+    }
+
     if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line no-console
       console.debug('AttributionCapture: attribution updated', updated)
