@@ -9,6 +9,7 @@ import ButtonSeobot from '../ui/ButtonSeobot'
 import { createClient } from '@/utils/supabase/client'
 import { trackEvent } from '@/lib/posthog'
 import { trackMeta } from '@/utils/trackMeta'
+import { gtagEvent, trackGoogleAdsLeadConversion } from '@/lib/gtag'
 
 interface SeobotAuthModalProps {
   isOpen: boolean
@@ -49,6 +50,11 @@ export default function SeobotAuthModal({ isOpen, onClose }: SeobotAuthModalProp
     setIsSubmitting(true)
     setFormError(null)
 
+    // Track submit click separately from successful lead conversion
+    gtagEvent('try_now_continue_click', {
+      source: 'try_now_modal',
+    })
+
     try {
       // Track lead submission attempt
       trackEvent('try_now_lead_submitted', {
@@ -81,6 +87,10 @@ export default function SeobotAuthModal({ isOpen, onClose }: SeobotAuthModalProp
             })
 
             trackMeta('Lead', { email })
+            // Google Ads Lead conversion (only fires when conversion label + Ads ID are configured)
+            trackGoogleAdsLeadConversion({
+              email,
+            })
           }
         }
       } catch (storageError) {
@@ -160,8 +170,11 @@ export default function SeobotAuthModal({ isOpen, onClose }: SeobotAuthModalProp
                         <input
                           type="text"
                           value={fullName}
-                          onChange={(e) => setFullName(e.target.value)}
-                          onFocus={() => trackEvent('form_focused_name', { source: 'try_now_modal' })}
+                        onChange={(e) => setFullName(e.target.value)}
+                        onFocus={() => {
+                          trackEvent('form_focused_name', { source: 'try_now_modal' })
+                          gtagEvent('form_focused_name', { source: 'try_now_modal' })
+                        }}
                           required
                           className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 sm:py-3.5 text-white text-base focus:outline-none focus:border-primary-green transition-colors"
                           placeholder="Enter your full name"
@@ -176,8 +189,11 @@ export default function SeobotAuthModal({ isOpen, onClose }: SeobotAuthModalProp
                         <input
                           type="email"
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          onFocus={() => trackEvent('form_focused_email', { source: 'try_now_modal' })}
+                        onChange={(e) => setEmail(e.target.value)}
+                        onFocus={() => {
+                          trackEvent('form_focused_email', { source: 'try_now_modal' })
+                          gtagEvent('form_focused_email', { source: 'try_now_modal' })
+                        }}
                           required
                           className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 sm:py-3.5 text-white text-base focus:outline-none focus:border-primary-green transition-colors"
                           placeholder="Enter your email"
