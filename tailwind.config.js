@@ -28,10 +28,7 @@ module.exports = {
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
-          green: '#10b981',
-          emerald: '#10b981',
-          cyan: '#06b6d4',
-          lime: '#84cc16'
+          green: '#10b981'
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
@@ -57,32 +54,22 @@ module.exports = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'
         },
-        orange: {
-          accent: '#FF6B00'
-        }
+        'background-light': '#FAFBFC',
+        'background-dark': '#0F172A',
+        'text-light': '#1E293B',
+        'text-dark': '#F1F5F9',
+        'border-light': '#E2E8F0',
+        'border-dark': '#334155'
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)'
       },
-      keyframes: {
-        'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' }
-        },
-        'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' }
-        }
-      },
-      animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out'
-      },
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],
-        mono: ['var(--font-mono)', 'JetBrains Mono', 'Courier New', 'monospace']
+        mono: ['var(--font-mono)', 'JetBrains Mono', 'Courier New', 'monospace'],
+        display: ['var(--font-instrument-serif)', 'serif']
       },
       letterSpacing: {
         tighter: '-0.05em',
@@ -92,30 +79,6 @@ module.exports = {
         wider: '0.05em',
         widest: '0.1em'
       },
-      keyframes: {
-        'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' }
-        },
-        'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' }
-        },
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-8px)' }
-        },
-        glow: {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(16, 185, 129, 0.2)' },
-          '50%': { boxShadow: '0 0 30px rgba(16, 185, 129, 0.4)' }
-        }
-      },
-      animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
-        float: 'float ease-in-out infinite',
-        glow: 'glow 2s ease-in-out infinite'
-      }
     }
   },
   plugins: [require('tailwindcss-animated')]

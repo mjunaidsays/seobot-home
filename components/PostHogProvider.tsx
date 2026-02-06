@@ -1,44 +1,3 @@
-// 'use client';
-
-// import { useEffect, Suspense } from 'react';
-// import { usePathname, useSearchParams } from 'next/navigation';
-// import { initPostHog, trackPageView } from '@/lib/posthog';
-
-// function PostHogPageView() {
-//   const pathname = usePathname();
-//   const searchParams = useSearchParams();
-
-//   useEffect(() => {
-//     // Track page views when route changes
-//     if (pathname) {
-//       let url = window.origin + pathname;
-//       if (searchParams && searchParams.toString()) {
-//         url = url + '?' + searchParams.toString();
-//       }
-//       trackPageView(url);
-//     }
-//   }, [pathname, searchParams]);
-
-//   return null;
-// }
-
-// export default function PostHogProvider({ children }: { children: React.ReactNode }) {
-//   useEffect(() => {
-//     // Initialize PostHog on mount
-//     initPostHog();
-//   }, []);
-
-//   return (
-//     <>
-//       <Suspense fallback={null}>
-//         <PostHogPageView />
-//       </Suspense>
-//       {children}
-//     </>
-//   );
-// }
-
-
 'use client'
 
 import posthog from 'posthog-js'
@@ -46,7 +5,7 @@ import { PostHogProvider } from 'posthog-js/react'
 import { useEffect, Suspense, useState } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
-const PRODUCT_NAME = 'UpRank'
+const PRODUCT_NAME = 'Seoscribed'
 
 function PostHogPageView() {
   const pathname = usePathname()

@@ -2,7 +2,7 @@
 
 import posthog from 'posthog-js';
 
-const PRODUCT_NAME = 'UpRank';
+const PRODUCT_NAME = 'Seoscribed';
 
 // Initialize PostHog only on client side
 export const initPostHog = () => {

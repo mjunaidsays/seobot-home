@@ -76,9 +76,8 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground text-slate-100;
-    background: linear-gradient(to bottom, #020617 0%, #0f172a 50%, #020617 100%);
-    background-attachment: fixed;
+    @apply bg-background text-foreground;
+    background: #FAFBFC;
   }
   html {
     scroll-behavior: smooth;
@@ -141,4 +140,46 @@
   .glow-emerald-hover:hover {
     box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
   }
+}
+
+/* ═══════════════════════════════════════════════════════════ */
+/* LANDING PAGE STYLES                                         */
+/* ═══════════════════════════════════════════════════════════ */
+
+/* ── Theme isolation ─────────────────────────────────────── */
+/* Force light-mode CSS custom properties within the landing  */
+/* page, regardless of whether <html class="dark"> is set.    */
+.landing-page-scope {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  color: #1E293B;
+  background: #FAFBFC;
+}
+
+/* ── Heading font (scoped to landing page only) ──────────── */
+/* :where() zeroes specificity so Tailwind's .font-sans can  */
+/* still override on elements that need Inter (e.g. FAQ h4). */
+:where(.landing-page-scope) h1,
+:where(.landing-page-scope) h2,
+:where(.landing-page-scope) h3,
+:where(.landing-page-scope) h4,
+:where(.landing-page-scope) h5,
+:where(.landing-page-scope) h6 {
+  font-family: var(--font-instrument-serif), 'Instrument Serif', serif;
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #6366F1, #8B5CF6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
