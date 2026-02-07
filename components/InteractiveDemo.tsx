@@ -249,7 +249,7 @@ function StreamText({ segments, speed = 6 }: { segments: CityAfterSegment[]; spe
 // BEFORE TEXT with cycling city name
 // ═══════════════════════════════════════════════════════════
 
-function BeforeText({ activeCityName }: { activeCityName: string }) {
+function BeforeText({ activeCityName, isVisible }: { activeCityName: string; isVisible: boolean }) {
   const [displayCity, setDisplayCity] = useState(activeCityName);
   const allNames = CITIES.map(c => c.city);
 
@@ -257,12 +257,13 @@ function BeforeText({ activeCityName }: { activeCityName: string }) {
     let i = allNames.indexOf(activeCityName);
     if (i === -1) i = 0;
     setDisplayCity(allNames[i]);
+    if (!isVisible) return;
     const interval = setInterval(() => {
       i = (i + 1) % allNames.length;
       setDisplayCity(allNames[i]);
     }, 600);
     return () => clearInterval(interval);
-  }, [activeCityName]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeCityName, isVisible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <span className="text-zinc-400">
@@ -356,6 +357,21 @@ export default function InteractiveDemo() {
   const [transitioning, setTransitioning] = useState(false);
   const [manualMode, setManualMode] = useState(false);
   const autoRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(true);
+
+  // Pause auto-play when scrolled out of view to prevent off-screen height
+  // changes from causing unwanted scroll corrections
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const city = CITIES[cityIdx];
   const isBefore = phase === "before";
@@ -364,7 +380,7 @@ export default function InteractiveDemo() {
   // ── Auto-play orchestration ──
 
   useEffect(() => {
-    if (phase !== "before" || manualMode) return;
+    if (phase !== "before" || manualMode || !isVisible) return;
     autoRef.current = setTimeout(() => {
       setTransitioning(true);
       setTimeout(() => {
@@ -373,18 +389,18 @@ export default function InteractiveDemo() {
       }, 300);
     }, 7000);
     return () => clearTimeout(autoRef.current);
-  }, [phase, manualMode]);
+  }, [phase, manualMode, isVisible]);
 
   useEffect(() => {
-    if (phase !== "after" || manualMode) return;
+    if (phase !== "after" || manualMode || !isVisible) return;
     autoRef.current = setTimeout(() => {
       setPhase("cycling");
     }, 6000);
     return () => clearTimeout(autoRef.current);
-  }, [phase, manualMode]);
+  }, [phase, manualMode, isVisible]);
 
   useEffect(() => {
-    if (phase !== "cycling" || manualMode) return;
+    if (phase !== "cycling" || manualMode || !isVisible) return;
     autoRef.current = setTimeout(() => {
       setTransitioning(true);
       setTimeout(() => {
@@ -393,7 +409,7 @@ export default function InteractiveDemo() {
       }, 250);
     }, 6000);
     return () => clearTimeout(autoRef.current);
-  }, [phase, cityIdx, manualMode]);
+  }, [phase, cityIdx, manualMode, isVisible]);
 
   // ── Manual controls ──
 
@@ -443,7 +459,7 @@ export default function InteractiveDemo() {
   const hint = getHint();
 
   return (
-    <div className="mt-20 w-full max-w-[680px] mx-auto relative">
+    <div ref={containerRef} className="mt-20 w-full max-w-[680px] mx-auto relative">
 
       {/* Glow — shifts color with phase */}
       <div
@@ -564,7 +580,7 @@ export default function InteractiveDemo() {
                     {/* Text */}
                     <div className="mt-1.5 text-[13px] sm:text-[14px] leading-[1.85]">
                       {isBefore ? (
-                        <BeforeText activeCityName={city.city} key="before-text" />
+                        <BeforeText activeCityName={city.city} isVisible={isVisible} key="before-text" />
                       ) : (
                         <span className="text-zinc-700">
                           <StreamText segments={city.after} speed={6} key={`after-${cityIdx}`} />

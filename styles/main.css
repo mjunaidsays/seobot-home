@@ -79,9 +79,6 @@
     @apply bg-background text-foreground;
     background: #FAFBFC;
   }
-  html {
-    scroll-behavior: smooth;
-  }
 }
 
 @layer utilities {
