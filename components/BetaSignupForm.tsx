@@ -32,12 +32,12 @@ export default function BetaSignupForm() {
     setIsSubmitting(true)
     setFormError(null)
 
-    gtagEvent('beta_signup_submitted', {
+    gtagEvent('form_submitted', {
       source: 'landing_page_cta',
     })
 
     try {
-      trackEvent('beta_signup_submitted', {
+      trackEvent('form_submitted', {
         source: 'landing_page_cta',
         email,
       })
@@ -72,14 +72,14 @@ export default function BetaSignupForm() {
           }
 
           if (error) {
-            trackEvent('signup_failed', {
+            trackEvent('lead_capture_failed', {
               source: 'landing_page_cta',
               email,
               error_message: error.message,
               error_code: error.code ?? undefined,
             })
           } else {
-            trackEvent('signup_success', {
+            trackEvent('lead_captured', {
               source: 'landing_page_cta',
               email,
             })
@@ -89,7 +89,7 @@ export default function BetaSignupForm() {
           }
         }
       } catch (storageError) {
-        trackEvent('signup_failed', {
+        trackEvent('lead_capture_failed', {
           source: 'landing_page_cta',
           email,
           error_message: storageError instanceof Error ? storageError.message : 'Unknown error',
@@ -116,8 +116,8 @@ export default function BetaSignupForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         onFocus={() => {
-          trackEvent('form_focused_email', { source: 'landing_page_cta' })
-          gtagEvent('form_focused_email', { source: 'landing_page_cta' })
+          trackEvent('form_focused', { source: 'landing_page_cta' })
+          gtagEvent('form_focused', { source: 'landing_page_cta' })
         }}
         disabled={isSubmitting}
       />

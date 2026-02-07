@@ -1,11 +1,13 @@
 import InteractiveDemo from "@/components/InteractiveDemo";
 import BetaSignupForm from "@/components/BetaSignupForm";
 import SmoothScrollAnchors from "@/components/SmoothScrollAnchors";
+import SectionTracker from "@/components/SectionTracker";
 
 export default function Home() {
   return (
     <div className="landing-page-scope bg-[#FAFBFC] text-[#1E293B]">
       <SmoothScrollAnchors />
+      <SectionTracker />
       {/* ============================================================ */}
       {/* NAV — Logo only, no login (no product to log into yet)       */}
       {/* ============================================================ */}
@@ -21,7 +23,7 @@ export default function Home() {
       {/* ============================================================ */}
       {/* HERO                                                          */}
       {/* ============================================================ */}
-      <section className="pt-20 pb-20 overflow-hidden">
+      <section data-track-section="hero" className="pt-20 pb-20 overflow-hidden">
         <div className="max-w-[1120px] mx-auto px-6 text-center">
 
           {/* Badge */}
@@ -46,11 +48,11 @@ export default function Home() {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-            <a href="#mechanism" className="px-8 py-3.5 bg-[#4338CA] text-white rounded-lg font-medium hover:bg-indigo-800 transition-all flex items-center gap-2 shadow-lg hover:shadow-xl">
+            <a href="#mechanism" data-cta-name="See the Difference" data-cta-location="hero" className="px-8 py-3.5 bg-[#4338CA] text-white rounded-lg font-medium hover:bg-indigo-800 transition-all flex items-center gap-2 shadow-lg hover:shadow-xl">
               See the Difference
               <span className="material-icons-outlined text-sm">arrow_downward</span>
             </a>
-            <a href="#get-access" className="px-8 py-3.5 bg-white border border-slate-200 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition-all flex items-center gap-2">
+            <a href="#get-access" data-cta-name="Get Free Beta Access" data-cta-location="hero" className="px-8 py-3.5 bg-white border border-slate-200 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition-all flex items-center gap-2">
               Get Free Beta Access
               <span className="material-icons-outlined text-sm">arrow_forward</span>
             </a>
@@ -72,7 +74,7 @@ export default function Home() {
       {/* ============================================================ */}
       {/* PROBLEM / COMPARISON                                          */}
       {/* ============================================================ */}
-      <section className="py-24 bg-background-light overflow-hidden">
+      <section data-track-section="problem" className="py-24 bg-background-light overflow-hidden">
         <div className="max-w-[1120px] mx-auto px-6">
           <div className="text-center mb-14">
             <span className="text-indigo-600 font-bold text-xs uppercase tracking-widest mb-2 block">Why your pages aren&apos;t ranking</span>
@@ -161,7 +163,7 @@ export default function Home() {
       {/* ============================================================ */}
       {/* MECHANISM — Local Context Engine                              */}
       {/* ============================================================ */}
-      <section id="mechanism" className="py-20 bg-white border-b border-slate-100">
+      <section id="mechanism" data-track-section="mechanism" className="py-20 bg-white border-b border-slate-100">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-wider mb-8">
             <span className="material-icons-outlined text-sm">memory</span>
@@ -202,7 +204,7 @@ export default function Home() {
       {/* ============================================================ */}
       {/* OFFER — Free beta access                                      */}
       {/* ============================================================ */}
-      <section className="py-24 bg-[#0F172A] text-white relative overflow-hidden">
+      <section data-track-section="offer" className="py-24 bg-[#0F172A] text-white relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 opacity-50"></div>
         <div className="max-w-[1120px] mx-auto px-6 text-center relative z-10">
 
@@ -303,7 +305,7 @@ export default function Home() {
       {/* ============================================================ */}
       {/* FAQ                                                            */}
       {/* ============================================================ */}
-      <section className="py-24 bg-slate-50">
+      <section data-track-section="faq" className="py-24 bg-slate-50">
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-16">
             <span className="text-[#4338CA] font-bold text-xs uppercase tracking-widest mb-2 block">Before you commit</span>
@@ -349,7 +351,7 @@ export default function Home() {
 
           {/* Inline CTA after FAQ */}
           <div className="mt-12 text-center">
-            <a href="#get-access" className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#4338CA] text-white rounded-lg font-medium hover:bg-indigo-800 transition-all shadow-lg">
+            <a href="#get-access" data-cta-name="Get Free Beta Access" data-cta-location="faq" className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#4338CA] text-white rounded-lg font-medium hover:bg-indigo-800 transition-all shadow-lg">
               Get Free Beta Access
               <span className="material-icons-outlined text-sm">arrow_forward</span>
             </a>
