@@ -5,22 +5,9 @@ import { createClient } from '@/utils/supabase/client'
 import { trackEvent } from '@/lib/posthog'
 import { trackMeta } from '@/utils/trackMeta'
 import { gtagEvent, trackGoogleAdsLeadConversion } from '@/lib/gtag'
+import { parseCookie, GUEST_ID_COOKIE_NAME, ATTR_COOKIE_NAME, ATTR_COOKIE_MAX_AGE_DAYS } from '@/utils/cookies'
 
 const REDIRECT_DELAY_MS = 1000
-const GUEST_ID_COOKIE_NAME = 'seobot_guest_id'
-
-function parseCookie(): Record<string, string> {
-  if (typeof document === 'undefined') return {}
-  return document.cookie.split(';').reduce<Record<string, string>>((acc, part) => {
-    const [rawKey, ...rest] = part.split('=')
-    if (!rawKey) return acc
-    const key = rawKey.trim()
-    const value = rest.join('=')
-    if (!key) return acc
-    acc[key] = value
-    return acc
-  }, {})
-}
 
 export default function BetaSignupForm() {
   const [email, setEmail] = useState('')
@@ -63,12 +50,42 @@ export default function BetaSignupForm() {
 
             error = updateError as typeof error
           } else {
-            const { error: insertError } = await supabase.from('guest_users').insert({
-              email,
-              source: 'landing_page_cta_lead',
-            })
+            // Read attribution cookie so UTM data isn't lost on fresh submissions
+            let attrData: Record<string, string | undefined> = {}
+            try {
+              const rawAttr = cookies[ATTR_COOKIE_NAME]
+              if (rawAttr) {
+                attrData = JSON.parse(decodeURIComponent(rawAttr))
+              }
+            } catch {
+              // ignore malformed cookie
+            }
+
+            const { data: insertData, error: insertError } = await supabase
+              .from('guest_users')
+              .insert({
+                email,
+                source: 'landing_page_cta_lead',
+                utm_source: attrData.utm_source ?? null,
+                utm_medium: attrData.utm_medium ?? null,
+                utm_campaign: attrData.utm_campaign ?? null,
+                utm_term: attrData.utm_term ?? null,
+                utm_content: attrData.utm_content ?? null,
+                landing_page: attrData.last_landing_url
+                  ? new URL(attrData.last_landing_url).pathname
+                  : (typeof window !== 'undefined' ? window.location.pathname : null),
+                referrer: attrData.initial_referrer ?? null,
+              })
+              .select('id')
+              .single()
 
             error = insertError as typeof error
+
+            // Set the guest ID cookie so re-submissions update instead of duplicating
+            if (!insertError && insertData) {
+              const maxAge = ATTR_COOKIE_MAX_AGE_DAYS * 24 * 60 * 60
+              document.cookie = `${GUEST_ID_COOKIE_NAME}=${insertData.id}; Path=/; Max-Age=${maxAge}; SameSite=Lax`
+            }
           }
 
           if (error) {
