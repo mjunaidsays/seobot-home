@@ -37,9 +37,10 @@ export default function BetaSignupForm() {
           const existingGuestId = cookies[GUEST_ID_COOKIE_NAME]
 
           let error = null as unknown as { message: string; code?: string | null } | null
+          let staleCookie = false
 
           if (existingGuestId) {
-            const { error: updateError } = await supabase
+            const { data: updatedRow, error: updateError } = await supabase
               .from('guest_users')
               .update({
                 email,
@@ -47,9 +48,19 @@ export default function BetaSignupForm() {
                 last_seen_at: new Date().toISOString(),
               })
               .eq('id', existingGuestId)
+              .select('id')
+              .maybeSingle()
 
-            error = updateError as typeof error
-          } else {
+            if (updateError) {
+              error = updateError as typeof error
+            } else if (!updatedRow) {
+              // Row was deleted but cookie persisted — clear stale cookie and fall through to INSERT
+              document.cookie = `${GUEST_ID_COOKIE_NAME}=; Path=/; Max-Age=0`
+              staleCookie = true
+            }
+          }
+
+          if (!existingGuestId || staleCookie) {
             // Read attribution cookie so UTM data isn't lost on fresh submissions
             let attrData: Record<string, string | undefined> = {}
             try {
