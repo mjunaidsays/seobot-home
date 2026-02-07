@@ -36,6 +36,31 @@ export default function BetaSignupForm() {
           const cookies = parseCookie()
           const existingGuestId = cookies[GUEST_ID_COOKIE_NAME]
 
+          // Read UTMs directly from the current URL (primary source)
+          const urlParams = new URLSearchParams(window.location.search)
+
+          // Read attribution cookie as fallback
+          let attrData: Record<string, string | undefined> = {}
+          try {
+            const rawAttr = cookies[ATTR_COOKIE_NAME]
+            if (rawAttr) {
+              attrData = JSON.parse(decodeURIComponent(rawAttr))
+            }
+          } catch {
+            // ignore malformed cookie
+          }
+
+          // Priority: URL params > cookie data > null
+          const utmSource = urlParams.get('utm_source') || attrData.utm_source || null
+          const utmMedium = urlParams.get('utm_medium') || attrData.utm_medium || null
+          const utmCampaign = urlParams.get('utm_campaign') || attrData.utm_campaign || null
+          const utmTerm = urlParams.get('utm_term') || attrData.utm_term || null
+          const utmContent = urlParams.get('utm_content') || attrData.utm_content || null
+          const landingPage = attrData.last_landing_url
+            ? new URL(attrData.last_landing_url).pathname
+            : window.location.pathname
+          const referrer = attrData.initial_referrer || null
+
           let error = null as unknown as { message: string; code?: string | null } | null
           let staleCookie = false
 
@@ -46,6 +71,13 @@ export default function BetaSignupForm() {
                 email,
                 source: 'landing_page_cta_lead',
                 last_seen_at: new Date().toISOString(),
+                utm_source: utmSource,
+                utm_medium: utmMedium,
+                utm_campaign: utmCampaign,
+                utm_term: utmTerm,
+                utm_content: utmContent,
+                landing_page: landingPage,
+                referrer,
               })
               .eq('id', existingGuestId)
               .select('id')
@@ -61,31 +93,18 @@ export default function BetaSignupForm() {
           }
 
           if (!existingGuestId || staleCookie) {
-            // Read attribution cookie so UTM data isn't lost on fresh submissions
-            let attrData: Record<string, string | undefined> = {}
-            try {
-              const rawAttr = cookies[ATTR_COOKIE_NAME]
-              if (rawAttr) {
-                attrData = JSON.parse(decodeURIComponent(rawAttr))
-              }
-            } catch {
-              // ignore malformed cookie
-            }
-
             const { data: insertData, error: insertError } = await supabase
               .from('guest_users')
               .insert({
                 email,
                 source: 'landing_page_cta_lead',
-                utm_source: attrData.utm_source ?? null,
-                utm_medium: attrData.utm_medium ?? null,
-                utm_campaign: attrData.utm_campaign ?? null,
-                utm_term: attrData.utm_term ?? null,
-                utm_content: attrData.utm_content ?? null,
-                landing_page: attrData.last_landing_url
-                  ? new URL(attrData.last_landing_url).pathname
-                  : (typeof window !== 'undefined' ? window.location.pathname : null),
-                referrer: attrData.initial_referrer ?? null,
+                utm_source: utmSource,
+                utm_medium: utmMedium,
+                utm_campaign: utmCampaign,
+                utm_term: utmTerm,
+                utm_content: utmContent,
+                landing_page: landingPage,
+                referrer,
               })
               .select('id')
               .single()

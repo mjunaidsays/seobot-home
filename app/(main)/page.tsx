@@ -252,42 +252,6 @@ export default function Home() {
             Join as a founding member. Free access during beta — we&apos;ll generate a sample page for your niche within 24 hours.
           </p>
 
-          {/* Qualification block */}
-          <div className="max-w-lg mx-auto mb-8 text-left">
-            <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3">
-              <div>
-                <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-3">This is for you if:</p>
-                <div className="space-y-2.5">
-                  <div className="flex items-start gap-2 text-sm text-slate-300">
-                    <span className="material-icons-outlined text-emerald-400 text-base mt-0.5 shrink-0">check</span>
-                    You have a directory with 100+ location pages
-                  </div>
-                  <div className="flex items-start gap-2 text-sm text-slate-300">
-                    <span className="material-icons-outlined text-emerald-400 text-base mt-0.5 shrink-0">check</span>
-                    You&apos;ve tried ChatGPT or freelancers and the output is repetitive
-                  </div>
-                  <div className="flex items-start gap-2 text-sm text-slate-300">
-                    <span className="material-icons-outlined text-emerald-400 text-base mt-0.5 shrink-0">check</span>
-                    You need content this month, not next quarter
-                  </div>
-                </div>
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 mt-4 sm:mt-0">This is NOT for you if:</p>
-                <div className="space-y-2.5">
-                  <div className="flex items-start gap-2 text-sm text-slate-500">
-                    <span className="material-icons-outlined text-slate-600 text-base mt-0.5 shrink-0">close</span>
-                    You have fewer than 50 pages — ChatGPT is fine at that scale
-                  </div>
-                  <div className="flex items-start gap-2 text-sm text-slate-500">
-                    <span className="material-icons-outlined text-slate-600 text-base mt-0.5 shrink-0">close</span>
-                    You need hand-crafted, editorial-quality longform content
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Access card */}
           <div id="get-access" className="max-w-md mx-auto bg-white/5 border border-white/10 rounded-2xl p-6 mb-10 backdrop-blur-sm scroll-mt-8">
 

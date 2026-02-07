@@ -85,9 +85,16 @@ async function logAnonymousGuestVisit(base: AttributionData, url: URL) {
     const supabase = createClient()
     const landingPath = url.pathname || '/'
 
-    const { data, error } = await supabase
+    // Generate UUID client-side and set cookie immediately (before the async
+    // Supabase call) so BetaSignupForm always sees it and uses the UPDATE path.
+    const guestId = crypto.randomUUID()
+    const maxAgeSeconds = ATTR_COOKIE_MAX_AGE_DAYS * 24 * 60 * 60
+    document.cookie = `${GUEST_ID_COOKIE_NAME}=${guestId}; Path=/; Max-Age=${maxAgeSeconds}; SameSite=Lax`
+
+    const { error } = await supabase
       .from('guest_users')
       .insert({
+      id: guestId,
       email: null,
       source: 'anonymous_visit',
       utm_source: base.utm_source ?? null,
@@ -98,16 +105,11 @@ async function logAnonymousGuestVisit(base: AttributionData, url: URL) {
       landing_page: landingPath,
       referrer: base.initial_referrer ?? (typeof document !== 'undefined' ? document.referrer || null : null),
       })
-      .select('id')
-      .single()
 
     if (error) {
+      // Roll back optimistic cookie on failure
+      document.cookie = `${GUEST_ID_COOKIE_NAME}=; Path=/; Max-Age=0`
       throw error
-    }
-
-    if (data && typeof document !== 'undefined') {
-      const maxAgeSeconds = ATTR_COOKIE_MAX_AGE_DAYS * 24 * 60 * 60
-      document.cookie = `${GUEST_ID_COOKIE_NAME}=${data.id}; Path=/; Max-Age=${maxAgeSeconds}; SameSite=Lax`
     }
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
@@ -135,17 +137,21 @@ export default function AttributionCapture() {
     const url = new URL(window.location.href)
     const now = new Date().toISOString()
 
+    // Fallback: if useSearchParams() returns empty, read from window.location.search
+    const fallbackParams = new URLSearchParams(window.location.search)
+    const getParam = (key: string) => searchParams.get(key) || fallbackParams.get(key) || undefined
+
     const current: AttributionData = {
-      utm_source: searchParams.get('utm_source') || undefined,
-      utm_medium: searchParams.get('utm_medium') || undefined,
-      utm_campaign: searchParams.get('utm_campaign') || undefined,
-      utm_term: searchParams.get('utm_term') || undefined,
-      utm_content: searchParams.get('utm_content') || undefined,
-      utm_id: searchParams.get('utm_id') || undefined,
-      gclid: searchParams.get('gclid') || undefined,
-      wbraid: searchParams.get('wbraid') || undefined,
-      gbraid: searchParams.get('gbraid') || undefined,
-      msclkid: searchParams.get('msclkid') || undefined,
+      utm_source: getParam('utm_source'),
+      utm_medium: getParam('utm_medium'),
+      utm_campaign: getParam('utm_campaign'),
+      utm_term: getParam('utm_term'),
+      utm_content: getParam('utm_content'),
+      utm_id: getParam('utm_id'),
+      gclid: getParam('gclid'),
+      wbraid: getParam('wbraid'),
+      gbraid: getParam('gbraid'),
+      msclkid: getParam('msclkid'),
     }
 
     const existing = getAttributionFromCookie()
