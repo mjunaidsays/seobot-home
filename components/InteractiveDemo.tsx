@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo, SVGProps } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback, SVGProps } from "react";
 
 // ═══════════════════════════════════════════════════════════
 // TYPES
@@ -286,6 +286,7 @@ function IntroSequence({ onDone }: { onDone: () => void }) {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
+    setStep(0);
     const t: ReturnType<typeof setTimeout>[] = [];
     t.push(setTimeout(() => setStep(1), 600));
     t.push(setTimeout(() => setStep(2), 1200));
@@ -372,6 +373,8 @@ export default function InteractiveDemo() {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
+  const handleIntroDone = useCallback(() => setPhase("before"), []);
 
   const city = CITIES[cityIdx];
   const isBefore = phase === "before";
@@ -494,7 +497,7 @@ export default function InteractiveDemo() {
 
         {/* ── Intro phase ── */}
         {phase === "intro" && (
-          <IntroSequence onDone={() => setPhase("before")} />
+          <IntroSequence onDone={handleIntroDone} />
         )}
 
         {/* ── Showcase phase (before / after / cycling) ── */}
