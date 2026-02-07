@@ -101,7 +101,7 @@ export default function BetaSignupForm() {
               email,
             })
 
-            trackMeta('Lead', { email })
+            await trackMeta('Lead', { email })
             trackGoogleAdsLeadConversion({ email })
           }
         }
