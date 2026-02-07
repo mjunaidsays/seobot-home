@@ -39,3 +39,5 @@ yarn-error.log*
 
 # certificates
 certificates
+
+.claude/settings.local.json
