@@ -1,9 +1,11 @@
 import InteractiveDemo from "@/components/InteractiveDemo";
 import BetaSignupForm from "@/components/BetaSignupForm";
+import SmoothScrollAnchors from "@/components/SmoothScrollAnchors";
 
 export default function Home() {
   return (
     <div className="landing-page-scope bg-[#FAFBFC] text-[#1E293B]">
+      <SmoothScrollAnchors />
       {/* ============================================================ */}
       {/* NAV — Logo only, no login (no product to log into yet)       */}
       {/* ============================================================ */}

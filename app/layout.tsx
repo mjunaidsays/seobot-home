@@ -81,7 +81,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html lang="en" className="scroll-smooth scroll-p-16" suppressHydrationWarning>
+    <html lang="en" className="scroll-p-16" suppressHydrationWarning>
       <head>
         {PIXEL_ID && (
           <Script
