@@ -33,7 +33,7 @@ const fontDisplay = FontDisplay({
   style: ['normal', 'italic'],
   display: 'swap',
   variable: '--font-instrument-serif',
-  preload: false
+  preload: true
 });
 
 const meta = {
@@ -86,7 +86,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
         {PIXEL_ID && (
           <Script
             id="fb-pixel"
-            strategy="beforeInteractive"
+            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `
                 !function(f,b,e,v,n,t,s)
@@ -127,9 +127,17 @@ export default async function RootLayout({ children }: PropsWithChildren) {
             />
           </>
         )}
-        <link
-          href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
-          rel="stylesheet"
+        <Script
+          id="material-icons-loader"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              var l=document.createElement('link');
+              l.rel='stylesheet';
+              l.href='https://fonts.googleapis.com/icon?family=Material+Icons+Outlined&display=swap';
+              document.head.appendChild(l);
+            `,
+          }}
         />
       </head>
       <body
