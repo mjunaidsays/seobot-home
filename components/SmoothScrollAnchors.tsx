@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { trackEvent } from "@/lib/posthog";
 
 export default function SmoothScrollAnchors() {
   useEffect(() => {
@@ -12,6 +13,15 @@ export default function SmoothScrollAnchors() {
       if (!target) return;
       e.preventDefault();
       target.scrollIntoView({ behavior: "smooth" });
+
+      const ctaName = anchor.getAttribute("data-cta-name");
+      if (ctaName) {
+        trackEvent("cta_clicked", {
+          cta_text: ctaName,
+          cta_location: anchor.getAttribute("data-cta-location") ?? undefined,
+          cta_target: anchor.getAttribute("href") ?? undefined,
+        });
+      }
     }
     document.addEventListener("click", handleClick);
     return () => document.removeEventListener("click", handleClick);

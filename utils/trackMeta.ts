@@ -1,6 +1,5 @@
 'use client'
 
-export const META_CR_KEY = 'meta_complete_registration_sent'
 type TrackMetaOptions = {
   email?: string
   phone?: string
@@ -25,9 +24,11 @@ export async function trackMeta(eventName: string, options: TrackMetaOptions = {
   }
 
   try {
-    void fetch('/api/meta-event', {
+    await fetch('/api/meta-event', {
       method: 'POST',
+      keepalive: true,
       headers: { 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(4000),
       body: JSON.stringify({
         eventName,
         eventId,

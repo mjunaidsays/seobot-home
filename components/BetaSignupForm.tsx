@@ -5,22 +5,9 @@ import { createClient } from '@/utils/supabase/client'
 import { trackEvent } from '@/lib/posthog'
 import { trackMeta } from '@/utils/trackMeta'
 import { gtagEvent, trackGoogleAdsLeadConversion } from '@/lib/gtag'
+import { parseCookie, GUEST_ID_COOKIE_NAME, ATTR_COOKIE_NAME, ATTR_COOKIE_MAX_AGE_DAYS } from '@/utils/cookies'
 
 const REDIRECT_DELAY_MS = 1000
-const GUEST_ID_COOKIE_NAME = 'seobot_guest_id'
-
-function parseCookie(): Record<string, string> {
-  if (typeof document === 'undefined') return {}
-  return document.cookie.split(';').reduce<Record<string, string>>((acc, part) => {
-    const [rawKey, ...rest] = part.split('=')
-    if (!rawKey) return acc
-    const key = rawKey.trim()
-    const value = rest.join('=')
-    if (!key) return acc
-    acc[key] = value
-    return acc
-  }, {})
-}
 
 export default function BetaSignupForm() {
   const [email, setEmail] = useState('')
@@ -32,12 +19,12 @@ export default function BetaSignupForm() {
     setIsSubmitting(true)
     setFormError(null)
 
-    gtagEvent('beta_signup_submitted', {
+    gtagEvent('form_submitted', {
       source: 'landing_page_cta',
     })
 
     try {
-      trackEvent('beta_signup_submitted', {
+      trackEvent('form_submitted', {
         source: 'landing_page_cta',
         email,
       })
@@ -50,9 +37,10 @@ export default function BetaSignupForm() {
           const existingGuestId = cookies[GUEST_ID_COOKIE_NAME]
 
           let error = null as unknown as { message: string; code?: string | null } | null
+          let staleCookie = false
 
           if (existingGuestId) {
-            const { error: updateError } = await supabase
+            const { data: updatedRow, error: updateError } = await supabase
               .from('guest_users')
               .update({
                 email,
@@ -60,36 +48,76 @@ export default function BetaSignupForm() {
                 last_seen_at: new Date().toISOString(),
               })
               .eq('id', existingGuestId)
+              .select('id')
+              .maybeSingle()
 
-            error = updateError as typeof error
-          } else {
-            const { error: insertError } = await supabase.from('guest_users').insert({
-              email,
-              source: 'landing_page_cta_lead',
-            })
+            if (updateError) {
+              error = updateError as typeof error
+            } else if (!updatedRow) {
+              // Row was deleted but cookie persisted — clear stale cookie and fall through to INSERT
+              document.cookie = `${GUEST_ID_COOKIE_NAME}=; Path=/; Max-Age=0`
+              staleCookie = true
+            }
+          }
+
+          if (!existingGuestId || staleCookie) {
+            // Read attribution cookie so UTM data isn't lost on fresh submissions
+            let attrData: Record<string, string | undefined> = {}
+            try {
+              const rawAttr = cookies[ATTR_COOKIE_NAME]
+              if (rawAttr) {
+                attrData = JSON.parse(decodeURIComponent(rawAttr))
+              }
+            } catch {
+              // ignore malformed cookie
+            }
+
+            const { data: insertData, error: insertError } = await supabase
+              .from('guest_users')
+              .insert({
+                email,
+                source: 'landing_page_cta_lead',
+                utm_source: attrData.utm_source ?? null,
+                utm_medium: attrData.utm_medium ?? null,
+                utm_campaign: attrData.utm_campaign ?? null,
+                utm_term: attrData.utm_term ?? null,
+                utm_content: attrData.utm_content ?? null,
+                landing_page: attrData.last_landing_url
+                  ? new URL(attrData.last_landing_url).pathname
+                  : (typeof window !== 'undefined' ? window.location.pathname : null),
+                referrer: attrData.initial_referrer ?? null,
+              })
+              .select('id')
+              .single()
 
             error = insertError as typeof error
+
+            // Set the guest ID cookie so re-submissions update instead of duplicating
+            if (!insertError && insertData) {
+              const maxAge = ATTR_COOKIE_MAX_AGE_DAYS * 24 * 60 * 60
+              document.cookie = `${GUEST_ID_COOKIE_NAME}=${insertData.id}; Path=/; Max-Age=${maxAge}; SameSite=Lax`
+            }
           }
 
           if (error) {
-            trackEvent('signup_failed', {
+            trackEvent('lead_capture_failed', {
               source: 'landing_page_cta',
               email,
               error_message: error.message,
               error_code: error.code ?? undefined,
             })
           } else {
-            trackEvent('signup_success', {
+            trackEvent('lead_captured', {
               source: 'landing_page_cta',
               email,
             })
 
-            trackMeta('Lead', { email })
+            await trackMeta('Lead', { email })
             trackGoogleAdsLeadConversion({ email })
           }
         }
       } catch (storageError) {
-        trackEvent('signup_failed', {
+        trackEvent('lead_capture_failed', {
           source: 'landing_page_cta',
           email,
           error_message: storageError instanceof Error ? storageError.message : 'Unknown error',
@@ -97,6 +125,7 @@ export default function BetaSignupForm() {
         console.warn('Lead storage failed:', storageError)
       }
 
+      sessionStorage.setItem('signup_email', email)
       await new Promise(r => setTimeout(r, REDIRECT_DELAY_MS))
       window.location.href = '/thank-you'
     } catch (error) {
@@ -116,8 +145,8 @@ export default function BetaSignupForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         onFocus={() => {
-          trackEvent('form_focused_email', { source: 'landing_page_cta' })
-          gtagEvent('form_focused_email', { source: 'landing_page_cta' })
+          trackEvent('form_focused', { source: 'landing_page_cta' })
+          gtagEvent('form_focused', { source: 'landing_page_cta' })
         }}
         disabled={isSubmitting}
       />

@@ -2,8 +2,9 @@
 
 import { LazyMotion, m } from 'framer-motion'
 import { useEffect, useRef } from 'react'
-import { trackMeta, META_CR_KEY } from '@/utils/trackMeta'
+import { trackMeta } from '@/utils/trackMeta'
 import { gtagEvent, trackGoogleAdsCompleteRegistrationConversion } from '@/lib/gtag'
+import { trackEvent, getPostHog } from '@/lib/posthog'
 
 const loadFeatures = () => import('@/lib/framer-features').then(res => res.domAnimation)
 
@@ -12,10 +13,24 @@ export default function ThankYouContent() {
 
   useEffect(() => {
     if (hasTracked.current) return
-    if (typeof window !== 'undefined' && sessionStorage.getItem(META_CR_KEY)) return
     hasTracked.current = true
-    if (typeof window !== 'undefined') sessionStorage.setItem(META_CR_KEY, '1')
-    trackMeta('CompleteRegistration')
+    const email = sessionStorage.getItem('signup_email') ?? undefined
+    trackMeta('CompleteRegistration', { email })
+
+    // PostHog initializes lazily via requestIdleCallback, so it may not be
+    // ready when this effect runs. Poll briefly to avoid dropping the event.
+    let attempts = 0
+    const tryTrack = () => {
+      const ph = getPostHog()
+      if (ph) {
+        trackEvent('lead_confirmed', { path: window.location.pathname })
+      } else if (attempts < 20) {
+        attempts++
+        setTimeout(tryTrack, 250)
+      }
+    }
+    tryTrack()
+
     // Google Ads CompleteRegistration conversion (fires once per session, gated by conversion label + Ads ID)
     trackGoogleAdsCompleteRegistrationConversion()
     // Additional gtag event for thank-you page view

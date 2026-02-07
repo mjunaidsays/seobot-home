@@ -19,6 +19,6 @@ module.exports = {
   },
   experimental: {
     // Tree-shake unused exports from these packages
-    optimizePackageImports: ['framer-motion', 'lucide-react', 'react-icons']
+    optimizePackageImports: ['framer-motion', 'lucide-react']
   }
 };

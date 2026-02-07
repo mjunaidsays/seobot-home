@@ -2,14 +2,15 @@
 
 import posthog from 'posthog-js'
 import { PostHogProvider } from 'posthog-js/react'
-import { useEffect, Suspense, useState } from 'react'
+import { useEffect, useRef, Suspense, useState } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
 const PRODUCT_NAME = 'Seoscribed'
 
-function PostHogPageView() {
+function PostHogPageView({ isReady }: { isReady: boolean }) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const lastCapturedUrl = useRef<string | null>(null)
 
   useEffect(() => {
     if (pathname && posthog.__loaded) {
@@ -17,14 +18,17 @@ function PostHogPageView() {
       if (searchParams?.toString()) {
         url = url + `?${searchParams.toString()}`
       }
-      // Track pageview with product identifier
-      posthog.capture('$pageview', {
-        $current_url: url,
-        product_name: PRODUCT_NAME,
-      })
-      console.log('PostHog Debug: Pageview tracked', { url, product_name: PRODUCT_NAME })
+      // Guard: only capture if we haven't already for this exact URL
+      if (lastCapturedUrl.current !== url) {
+        lastCapturedUrl.current = url
+        posthog.capture('$pageview', {
+          $current_url: url,
+          product_name: PRODUCT_NAME,
+        })
+        console.log('PostHog Debug: Pageview tracked', { url, product_name: PRODUCT_NAME })
+      }
     }
-  }, [pathname, searchParams])
+  }, [pathname, searchParams, isReady])
 
   return null
 }
@@ -155,24 +159,14 @@ export function PostHogProviderComponent({ children }: { children: React.ReactNo
     }
   }, [isInitialized])
 
-  // Always render children, PostHogProvider is optional
+  // Always use PostHogProvider wrapper so React never remounts children
+  // when isInitialized flips. posthog is a singleton — before init, ops are no-ops/queued.
   return (
-    <>
-      {isInitialized && posthog.__loaded ? (
-        <PostHogProvider client={posthog}>
-          <Suspense fallback={null}>
-            <PostHogPageView />
-          </Suspense>
-          {children}
-        </PostHogProvider>
-      ) : (
-        <>
-          <Suspense fallback={null}>
-            <PostHogPageView />
-          </Suspense>
-          {children}
-        </>
-      )}
-    </>
+    <PostHogProvider client={posthog}>
+      <Suspense fallback={null}>
+        <PostHogPageView isReady={isInitialized} />
+      </Suspense>
+      {children}
+    </PostHogProvider>
   )
 }

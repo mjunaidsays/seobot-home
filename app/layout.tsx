@@ -86,7 +86,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
         {PIXEL_ID && (
           <Script
             id="fb-pixel"
-            strategy="afterInteractive"
+            strategy="beforeInteractive"
             dangerouslySetInnerHTML={{
               __html: `
                 !function(f,b,e,v,n,t,s)
@@ -97,8 +97,11 @@ export default async function RootLayout({ children }: PropsWithChildren) {
                 t.src=v;s=b.getElementsByTagName(e)[0];
                 s.parentNode.insertBefore(t,s)}(window, document,'script',
                 'https://connect.facebook.net/en_US/fbevents.js');
-                fbq('init', '${PIXEL_ID}');
-                fbq('track', 'PageView');
+                if(!window.__fbPixelInit){
+                  window.__fbPixelInit=true;
+                  fbq('init', '${PIXEL_ID}');
+                  fbq('track', 'PageView');
+                }
               `,
             }}
           />
