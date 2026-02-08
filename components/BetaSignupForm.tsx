@@ -36,30 +36,14 @@ export default function BetaSignupForm() {
           const cookies = parseCookie()
           const existingGuestId = cookies[GUEST_ID_COOKIE_NAME]
 
-          // Read UTMs directly from the current URL (primary source)
+          // Read UTMs directly from the current URL only
           const urlParams = new URLSearchParams(window.location.search)
-
-          // Read attribution cookie as fallback
-          let attrData: Record<string, string | undefined> = {}
-          try {
-            const rawAttr = cookies[ATTR_COOKIE_NAME]
-            if (rawAttr) {
-              attrData = JSON.parse(decodeURIComponent(rawAttr))
-            }
-          } catch {
-            // ignore malformed cookie
-          }
-
-          // Priority: URL params > cookie data > null
-          const utmSource = urlParams.get('utm_source') || attrData.utm_source || null
-          const utmMedium = urlParams.get('utm_medium') || attrData.utm_medium || null
-          const utmCampaign = urlParams.get('utm_campaign') || attrData.utm_campaign || null
-          const utmTerm = urlParams.get('utm_term') || attrData.utm_term || null
-          const utmContent = urlParams.get('utm_content') || attrData.utm_content || null
-          const landingPage = attrData.last_landing_url
-            ? new URL(attrData.last_landing_url).pathname
-            : window.location.pathname
-          const referrer = attrData.initial_referrer || null
+          const utmSource = urlParams.get('utm_source')
+          const utmMedium = urlParams.get('utm_medium')
+          const utmCampaign = urlParams.get('utm_campaign')
+          const utmTerm = urlParams.get('utm_term')
+          const utmContent = urlParams.get('utm_content')
+          const hasUrlUtms = !!(utmSource || utmMedium || utmCampaign || utmTerm || utmContent)
 
           let error = null as unknown as { message: string; code?: string | null } | null
           let staleCookie = false
@@ -71,13 +55,15 @@ export default function BetaSignupForm() {
                 email,
                 source: 'landing_page_cta_lead',
                 last_seen_at: new Date().toISOString(),
-                utm_source: utmSource,
-                utm_medium: utmMedium,
-                utm_campaign: utmCampaign,
-                utm_term: utmTerm,
-                utm_content: utmContent,
-                landing_page: landingPage,
-                referrer,
+                // Only overwrite UTM fields if the current URL has UTMs
+                ...(hasUrlUtms ? {
+                  utm_source: utmSource,
+                  utm_medium: utmMedium,
+                  utm_campaign: utmCampaign,
+                  utm_term: utmTerm,
+                  utm_content: utmContent,
+                  landing_page: window.location.pathname,
+                } : {}),
               })
               .eq('id', existingGuestId)
               .select('id')
@@ -93,18 +79,30 @@ export default function BetaSignupForm() {
           }
 
           if (!existingGuestId || staleCookie) {
+            // Read attribution cookie for referrer (captured on first page load)
+            let initialReferrer: string | null = null
+            try {
+              const rawAttr = cookies[ATTR_COOKIE_NAME]
+              if (rawAttr) {
+                const attrData = JSON.parse(decodeURIComponent(rawAttr))
+                initialReferrer = attrData.initial_referrer || null
+              }
+            } catch {
+              // ignore malformed cookie
+            }
+
             const { data: insertData, error: insertError } = await supabase
               .from('guest_users')
               .insert({
                 email,
                 source: 'landing_page_cta_lead',
-                utm_source: utmSource,
-                utm_medium: utmMedium,
-                utm_campaign: utmCampaign,
-                utm_term: utmTerm,
-                utm_content: utmContent,
-                landing_page: landingPage,
-                referrer,
+                utm_source: utmSource || null,
+                utm_medium: utmMedium || null,
+                utm_campaign: utmCampaign || null,
+                utm_term: utmTerm || null,
+                utm_content: utmContent || null,
+                landing_page: window.location.pathname,
+                referrer: initialReferrer,
               })
               .select('id')
               .single()
