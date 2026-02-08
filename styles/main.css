@@ -3,81 +3,95 @@
 @tailwind utilities;
 
 :root {
-  --font-inter: 'Inter', sans-serif;
+  --font-sans: 'Outfit', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --font-display: 'Bricolage Grotesque', sans-serif;
+
+  /* Warm editorial palette */
+  --bg-warm: #F8F6F1;
+  --text-primary: #1A1A19;
+  --text-secondary: #706B63;
+  --text-muted: #A39E95;
+  --accent: #C2410C;
+  --accent-hover: #9A3412;
+  --success: #166534;
+  --error: #991B1B;
+  --dark-bg: #141413;
+  --border-warm: #E0DBD2;
+  --badge-bg: #EDEAD6;
 }
- 
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --background: 40 30% 97%;
+    --foreground: 60 3% 10%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
- 
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
- 
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
- 
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
- 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
- 
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
- 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --card: 40 30% 97%;
+    --card-foreground: 60 3% 10%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
- 
+    --popover: 40 30% 97%;
+    --popover-foreground: 60 3% 10%;
+
+    --primary: 60 3% 10%;
+    --primary-foreground: 40 30% 97%;
+
+    --secondary: 36 16% 92%;
+    --secondary-foreground: 60 3% 10%;
+
+    --muted: 36 16% 92%;
+    --muted-foreground: 30 7% 41%;
+
+    --accent: 36 16% 92%;
+    --accent-foreground: 60 3% 10%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 40 30% 97%;
+
+    --border: 34 14% 86%;
+    --input: 34 14% 86%;
+    --ring: 60 3% 10%;
+
     --radius: 0.5rem;
   }
- 
+
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    --background: 60 4% 8%;
+    --foreground: 40 30% 97%;
 
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
+    --card: 60 4% 8%;
+    --card-foreground: 40 30% 97%;
 
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 60 4% 8%;
+    --popover-foreground: 40 30% 97%;
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 222 47% 11%;
+    --primary: 40 30% 97%;
+    --primary-foreground: 60 4% 8%;
 
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 30 7% 14%;
+    --secondary-foreground: 40 30% 97%;
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 30 7% 14%;
+    --muted-foreground: 30 7% 56%;
 
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 30 7% 14%;
+    --accent-foreground: 40 30% 97%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 40 30% 97%;
 
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 240 4.9% 83.9%;
+    --border: 30 7% 14%;
+    --input: 30 7% 14%;
+    --ring: 36 16% 82%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
-    background: #FAFBFC;
+    background: var(--bg-warm);
   }
 }
 
@@ -85,57 +99,17 @@
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .section-title {
-    @apply text-emerald-400 text-sm md:text-base font-mono mb-3 tracking-tight;
+    @apply text-xs font-bold uppercase tracking-widest mb-3;
+    color: var(--accent);
+    font-family: var(--font-sans);
   }
-  
+
   .section-heading {
     @apply text-2xl md:text-3xl lg:text-4xl font-bold mb-6 tracking-tight;
     letter-spacing: -0.02em;
-  }
-
-  /* Glassmorphism utilities */
-  .glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .glass-hover {
-    @apply glass transition-all duration-300;
-  }
-
-  .glass-hover:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(16, 185, 129, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(16, 185, 129, 0.1);
-  }
-
-  /* Gradient text utilities */
-  .gradient-text {
-    background: linear-gradient(to bottom, #f1f5f9, #94a3b8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .gradient-text-accent {
-    background: linear-gradient(to right, #10b981, #06b6d4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Glow effects */
-  .glow-emerald {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
-  }
-
-  .glow-emerald-hover:hover {
-    box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+    font-family: var(--font-display);
   }
 }
 
@@ -144,33 +118,45 @@
 /* ═══════════════════════════════════════════════════════════ */
 
 /* ── Theme isolation ─────────────────────────────────────── */
-/* Force light-mode CSS custom properties within the landing  */
-/* page, regardless of whether <html class="dark"> is set.    */
 .landing-page-scope {
-  --background: 0 0% 100%;
-  --foreground: 240 10% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 240 10% 3.9%;
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
-  color: #1E293B;
-  background: #FAFBFC;
+  --background: 40 30% 97%;
+  --foreground: 60 3% 10%;
+  --card: 40 30% 97%;
+  --card-foreground: 60 3% 10%;
+  --border: 34 14% 86%;
+  --input: 34 14% 86%;
+  color: var(--text-primary);
+  background: var(--bg-warm);
 }
 
 /* ── Heading font (scoped to landing page only) ──────────── */
-/* :where() zeroes specificity so Tailwind's .font-sans can  */
-/* still override on elements that need Inter (e.g. FAQ h4). */
 :where(.landing-page-scope) h1,
 :where(.landing-page-scope) h2,
 :where(.landing-page-scope) h3,
 :where(.landing-page-scope) h4,
 :where(.landing-page-scope) h5,
 :where(.landing-page-scope) h6 {
-  font-family: var(--font-instrument-serif), 'Instrument Serif', serif;
+  font-family: var(--font-display), 'Bricolage Grotesque', sans-serif;
+}
+
+/* ── Grain texture overlay ──────────────────────────────── */
+.landing-page-scope::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.3;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
 }
 
 .text-gradient {
-  background: linear-gradient(to right, #6366F1, #8B5CF6);
+  background: linear-gradient(135deg, #C2410C, #9A3412);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

@@ -54,12 +54,18 @@ module.exports = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'
         },
-        'background-light': '#FAFBFC',
-        'background-dark': '#0F172A',
-        'text-light': '#1E293B',
-        'text-dark': '#F1F5F9',
-        'border-light': '#E2E8F0',
-        'border-dark': '#334155'
+        // Warm editorial palette
+        'bg-warm': '#F8F6F1',
+        'text-primary': '#1A1A19',
+        'text-secondary': '#706B63',
+        'text-muted': '#A39E95',
+        'brand-accent': '#C2410C',
+        'brand-accent-hover': '#9A3412',
+        'brand-success': '#166534',
+        'brand-error': '#991B1B',
+        'dark-bg': '#141413',
+        'border-warm': '#E0DBD2',
+        'badge-bg': '#EDEAD6',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -69,7 +75,7 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],
         mono: ['var(--font-mono)', 'JetBrains Mono', 'Courier New', 'monospace'],
-        display: ['var(--font-instrument-serif)', 'serif']
+        display: ['var(--font-display)', 'serif']
       },
       letterSpacing: {
         tighter: '-0.05em',

@@ -8,13 +8,13 @@ export const metadata: Metadata = {
 
 export default function ThankYouPage() {
   return (
-    <div className="landing-page-scope bg-[#FAFBFC] text-[#1E293B] min-h-screen">
+    <div className="landing-page-scope bg-[#F8F6F1] text-[#1A1A19] min-h-screen">
       {/* NAV — Same as landing page */}
-      <nav className="sticky top-0 z-50 bg-background-light/80 backdrop-blur-md border-b border-border-light">
+      <nav className="sticky top-0 z-50 bg-[#F8F6F1]/80 backdrop-blur-md border-b border-[#E0DBD2]">
         <div className="max-w-[1120px] mx-auto px-6 h-16 flex items-center">
           <a href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-black text-white rounded-lg flex items-center justify-center font-bold font-sans">S</div>
-            <span className="font-semibold text-lg tracking-tight text-slate-900">Seoscribed</span>
+            <div className="w-8 h-8 bg-[#C2410C] text-white rounded-lg flex items-center justify-center font-bold font-sans">S</div>
+            <span className="font-semibold text-lg tracking-tight text-[#1A1A19]">Seoscribed</span>
           </a>
         </div>
       </nav>
@@ -22,9 +22,9 @@ export default function ThankYouPage() {
       <ThankYouContent />
 
       {/* FOOTER — Same as landing page */}
-      <footer className="py-10 bg-[#0F172A] border-t border-slate-800">
+      <footer className="py-10 bg-[#141413] border-t border-[#2A2A28]">
         <div className="max-w-[1120px] mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
+          <div className="flex flex-col md:flex-row justify-between items-center text-xs text-[#706B63]">
             <div className="flex flex-col items-center md:items-start gap-1">
               <p>&copy; 2026 Seoscribed. All rights reserved.</p>
             </div>

@@ -28,7 +28,7 @@ type Phase = "intro" | "before" | "transforming" | "after" | "cycling";
 
 const CITIES: CityData[] = [
   {
-    city: "Austin", state: "TX", dot: "#4F46E5", unique: 98, words: 1842,
+    city: "Austin", state: "TX", dot: "#C2410C", unique: 98, words: 1842,
     after: [
       { t: "From " },
       { t: "Austin's vibrant South Congress district", h: true },
@@ -44,7 +44,7 @@ const CITIES: CityData[] = [
     ],
   },
   {
-    city: "Denver", state: "CO", dot: "#9333EA", unique: 96, words: 1650,
+    city: "Denver", state: "CO", dot: "#9A3412", unique: 96, words: 1650,
     after: [
       { t: "Clinics concentrated around " },
       { t: "Denver's booming RiNo neighborhood", h: true },
@@ -60,7 +60,7 @@ const CITIES: CityData[] = [
     ],
   },
   {
-    city: "Portland", state: "OR", dot: "#059669", unique: 97, words: 1923,
+    city: "Portland", state: "OR", dot: "#166534", unique: 97, words: 1923,
     after: [
       { t: "Rooted in " },
       { t: "Portland's Alberta Arts District", h: true },
@@ -76,7 +76,7 @@ const CITIES: CityData[] = [
     ],
   },
   {
-    city: "Nashville", state: "TN", dot: "#D97706", unique: 95, words: 1780,
+    city: "Nashville", state: "TN", dot: "#92400E", unique: 95, words: 1780,
     after: [
       { t: "Across " },
       { t: "Nashville's rapidly expanding East Side", h: true },
@@ -92,7 +92,7 @@ const CITIES: CityData[] = [
     ],
   },
   {
-    city: "Charlotte", state: "NC", dot: "#DC2626", unique: 99, words: 1695,
+    city: "Charlotte", state: "NC", dot: "#991B1B", unique: 99, words: 1695,
     after: [
       { t: "From " },
       { t: "Charlotte's bustling South End corridor", h: true },
@@ -151,8 +151,8 @@ function DotGrid({ isBefore }: { isBefore: boolean }) {
             className="rounded-[1px]"
             style={{
               width: 3.5, height: 3.5,
-              backgroundColor: isBefore ? '#F87171' : '#34D399',
-              opacity: isBefore ? 0.45 : 0.75,
+              backgroundColor: isBefore ? '#C2410C' : '#166534',
+              opacity: isBefore ? 0.35 : 0.65,
               transition: `all 0.4s ease ${isBefore ? '0s' : `${d}s`}`,
             }}
           />
@@ -160,7 +160,7 @@ function DotGrid({ isBefore }: { isBefore: boolean }) {
       </div>
       <span
         className="text-[9px] font-bold uppercase tracking-wider transition-colors duration-500"
-        style={{ color: isBefore ? '#DC2626' : '#059669' }}
+        style={{ color: isBefore ? '#991B1B' : '#166534' }}
       >
         {isBefore ? '500 duplicate pages' : '500 unique pages'}
       </span>
@@ -174,7 +174,7 @@ function DotGrid({ isBefore }: { isBefore: boolean }) {
 
 function ScoreGauge({ score, isBefore }: { score: number; isBefore: boolean }) {
   const val = isBefore ? 12 : score;
-  const color = isBefore ? '#DC2626' : '#059669';
+  const color = isBefore ? '#991B1B' : '#166534';
   const r = 26;
   const circ = 2 * Math.PI * r;
   const off = circ - (val / 100) * circ;
@@ -183,7 +183,7 @@ function ScoreGauge({ score, isBefore }: { score: number; isBefore: boolean }) {
     <div className="flex flex-col items-center gap-0.5">
       <div className="relative w-[64px] h-[64px]">
         <svg className="w-full h-full -rotate-90" viewBox="0 0 60 60">
-          <circle cx="30" cy="30" r={r} fill="none" stroke="#f4f4f5" strokeWidth="4" />
+          <circle cx="30" cy="30" r={r} fill="none" stroke="#E0DBD2" strokeWidth="4" />
           <circle
             cx="30" cy="30" r={r} fill="none"
             stroke={color} strokeWidth="4" strokeLinecap="round"
@@ -235,12 +235,12 @@ function StreamText({ segments, speed = 6 }: { segments: CityAfterSegment[]; spe
         rem -= len;
         const text = seg.t.slice(0, len);
         return seg.h ? (
-          <mark key={si} className="bg-amber-100/90 text-inherit px-0.5 rounded border-b-2 border-amber-300/80">{text}</mark>
+          <mark key={si} className="bg-[#EDEAD6] text-inherit px-0.5 rounded border-b-2 border-[#C2410C]/30">{text}</mark>
         ) : (
           <span key={si}>{text}</span>
         );
       })}
-      {streaming && <span className="inline-block w-[2px] h-[14px] bg-indigo-500 ml-0.5 -mb-[2px] animate-pulse" />}
+      {streaming && <span className="inline-block w-[2px] h-[14px] bg-[#C2410C] ml-0.5 -mb-[2px] animate-pulse" />}
     </span>
   );
 }
@@ -266,11 +266,11 @@ function BeforeText({ activeCityName, isVisible }: { activeCityName: string; isV
   }, [activeCityName, isVisible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <span className="text-zinc-400">
+    <span className="text-[#A39E95]">
       {GENERIC_PARTS.map((p, i) =>
         p === "{CITY}" ? (
-          <span key={i} className="font-semibold text-red-500 transition-all duration-200"
-            style={{ textDecoration: 'underline', textDecorationColor: 'rgba(239,68,68,0.3)', textDecorationStyle: 'wavy', textUnderlineOffset: '4px' }}
+          <span key={i} className="font-semibold text-[#991B1B] transition-all duration-200"
+            style={{ textDecoration: 'underline', textDecorationColor: 'rgba(153,27,27,0.3)', textDecorationStyle: 'wavy', textUnderlineOffset: '4px' }}
           >{displayCity}</span>
         ) : <span key={i}>{p}</span>
       )}
@@ -321,14 +321,14 @@ function IntroSequence({ onDone }: { onDone: () => void }) {
               }}
             >
               <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
-                done ? 'bg-emerald-100 text-emerald-600'
-                  : loading ? 'bg-indigo-100 text-indigo-600'
-                    : 'bg-zinc-100 text-zinc-400'
+                done ? 'bg-[#DCFCE7] text-[#166534]'
+                  : loading ? 'bg-[#FFF7ED] text-[#C2410C]'
+                    : 'bg-[#EDEAD6] text-[#A39E95]'
               }`}>
                 {done ? <I.check className="w-3.5 h-3.5" /> : loading ? <I.spin className="w-3.5 h-3.5" /> : item.icon}
               </div>
               <span className={`text-[13px] font-medium transition-colors duration-300 ${
-                done ? 'text-zinc-800' : loading ? 'text-zinc-600' : 'text-zinc-400'
+                done ? 'text-[#1A1A19]' : loading ? 'text-[#706B63]' : 'text-[#A39E95]'
               }`}>{item.label}</span>
             </div>
           );
@@ -337,9 +337,9 @@ function IntroSequence({ onDone }: { onDone: () => void }) {
 
       {/* Mini progress bar */}
       <div className="w-full max-w-xs mt-6">
-        <div className="h-1.5 bg-zinc-100 rounded-full overflow-hidden">
+        <div className="h-1.5 bg-[#EDEAD6] rounded-full overflow-hidden">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-emerald-500 transition-all duration-700 ease-out"
+            className="h-full rounded-full bg-gradient-to-r from-[#C2410C] to-[#166534] transition-all duration-700 ease-out"
             style={{ width: step === 0 ? '5%' : step === 1 ? '25%' : step === 2 ? '50%' : step === 3 ? '80%' : '100%' }}
           />
         </div>
@@ -453,7 +453,7 @@ export default function InteractiveDemo() {
   // ── Hint text ──
   function getHint() {
     if (phase === "intro") return { icon: <I.bolt className="w-3 h-3" />, text: "Setting up your generation..." };
-    if (isBefore && !manualMode) return { icon: <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />, text: "Same text for every city — only the name changes" };
+    if (isBefore && !manualMode) return { icon: <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#991B1B] animate-pulse" />, text: "Same text for every city — only the name changes" };
     if (isBefore) return { icon: <I.spark className="w-3 h-3" />, text: "Click \"After\" to see the Seoscribed version" };
     if (isAfter && !manualMode) return { icon: <I.spark className="w-3 h-3" />, text: "Each city gets completely unique content — click any to compare" };
     return { icon: <I.spark className="w-3 h-3" />, text: "Click any city — every page is genuinely different" };
@@ -469,28 +469,28 @@ export default function InteractiveDemo() {
         className="absolute -inset-4 rounded-[32px] blur-3xl pointer-events-none transition-all duration-1000"
         style={{
           background: isBefore
-            ? 'radial-gradient(ellipse at center, rgba(239,68,68,0.05) 0%, transparent 70%)'
+            ? 'radial-gradient(ellipse at center, rgba(194,65,12,0.05) 0%, transparent 70%)'
             : phase === "intro"
-              ? 'radial-gradient(ellipse at center, rgba(99,102,241,0.05) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse at center, rgba(16,185,129,0.07) 0%, transparent 70%)'
+              ? 'radial-gradient(ellipse at center, rgba(194,65,12,0.04) 0%, transparent 70%)'
+              : 'radial-gradient(ellipse at center, rgba(22,101,52,0.06) 0%, transparent 70%)'
         }}
       />
 
       {/* Main container */}
-      <div className="relative bg-white rounded-2xl border border-zinc-200/80 shadow-2xl shadow-zinc-300/30 overflow-hidden">
+      <div className="relative bg-white rounded-2xl border border-[#E0DBD2] shadow-2xl shadow-[#706B63]/10 overflow-hidden">
 
         {/* Browser chrome */}
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-200 bg-zinc-50/80">
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#E0DBD2] bg-[#F8F6F1]/80">
           <div className="flex gap-1.5">
             {["#FCA5A5", "#FDE68A", "#86EFAC"].map((c, i) => (
               <div key={i} className="w-2.5 h-2.5 rounded-full" style={{ background: c, opacity: 0.8 }} />
             ))}
           </div>
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-zinc-100 rounded-md">
-            <svg className="w-2.5 h-2.5 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+          <div className="flex items-center gap-1.5 px-3 py-1 bg-[#EDEAD6] rounded-md">
+            <svg className="w-2.5 h-2.5 text-[#A39E95]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
             </svg>
-            <span className="text-[10px] text-zinc-400 font-mono tracking-wide">app.seoscribed.com</span>
+            <span className="text-[10px] text-[#A39E95] font-mono tracking-wide">app.seoscribed.com</span>
           </div>
           <div className="w-8" />
         </div>
@@ -504,7 +504,7 @@ export default function InteractiveDemo() {
         {phase !== "intro" && (
           <>
             {/* City pills + toggle bar */}
-            <div className="px-4 sm:px-5 pt-4 pb-3 border-b border-zinc-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+            <div className="px-4 sm:px-5 pt-4 pb-3 border-b border-[#E0DBD2]/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
               style={{ animation: 'fadeUp .3s ease' }}
             >
               <div className="flex gap-1.5 flex-wrap">
@@ -514,8 +514,8 @@ export default function InteractiveDemo() {
                     onClick={() => selectCity(i)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 border ${
                       i === cityIdx
-                        ? 'bg-zinc-900 text-white border-zinc-900 shadow-sm'
-                        : 'bg-white text-zinc-500 border-zinc-200 hover:border-zinc-300 hover:text-zinc-700'
+                        ? 'bg-[#1A1A19] text-white border-[#1A1A19] shadow-sm'
+                        : 'bg-white text-[#706B63] border-[#E0DBD2] hover:border-[#C2410C]/30 hover:text-[#1A1A19]'
                     }`}
                   >
                     <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: i === cityIdx ? '#fff' : c.dot }} />
@@ -524,17 +524,17 @@ export default function InteractiveDemo() {
                 ))}
               </div>
 
-              <div className="flex items-center bg-zinc-100 rounded-lg p-0.5 shrink-0">
+              <div className="flex items-center bg-[#EDEAD6] rounded-lg p-0.5 shrink-0">
                 <button
                   onClick={toggleToBefore}
                   className={`px-3 py-1.5 rounded-md text-[11px] font-bold uppercase tracking-wide transition-all duration-200 ${
-                    isBefore ? 'bg-white text-red-600 shadow-sm' : 'text-zinc-400 hover:text-zinc-600'
+                    isBefore ? 'bg-white text-[#991B1B] shadow-sm' : 'text-[#A39E95] hover:text-[#706B63]'
                   }`}
                 >Before</button>
                 <button
                   onClick={toggleToAfter}
                   className={`px-3 py-1.5 rounded-md text-[11px] font-bold uppercase tracking-wide transition-all duration-200 ${
-                    isAfter ? 'bg-white text-emerald-600 shadow-sm' : 'text-zinc-400 hover:text-zinc-600'
+                    isAfter ? 'bg-white text-[#166534] shadow-sm' : 'text-[#A39E95] hover:text-[#706B63]'
                   }`}
                 >After</button>
               </div>
@@ -550,11 +550,11 @@ export default function InteractiveDemo() {
                   {/* Page title */}
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-2 h-2 rounded-full flex-shrink-0 transition-all duration-300" style={{ background: city.dot }} />
-                    <span className="text-sm font-bold text-zinc-800 truncate">
+                    <span className="text-sm font-bold text-[#1A1A19] truncate">
                       Best Dentists in {city.city}, {city.state}
                     </span>
                     {isAfter && (
-                      <span className="text-[10px] font-mono text-zinc-400 ml-auto hidden sm:inline">
+                      <span className="text-[10px] font-mono text-[#A39E95] ml-auto hidden sm:inline">
                         {city.words.toLocaleString()} words · {Math.round(city.words / 250)} min
                       </span>
                     )}
@@ -563,7 +563,7 @@ export default function InteractiveDemo() {
                   {/* Content card */}
                   <div
                     className={`relative rounded-xl border-2 p-4 sm:p-5 min-h-[150px] transition-all duration-500 ${
-                      isBefore ? 'border-red-200/70 bg-red-50/20' : 'border-emerald-200/70 bg-emerald-50/10'
+                      isBefore ? 'border-[#991B1B]/20 bg-[#FDF2F0]/30' : 'border-[#166534]/20 bg-[#F0FDF4]/30'
                     }`}
                     style={{
                       opacity: transitioning ? 0 : 1,
@@ -574,8 +574,8 @@ export default function InteractiveDemo() {
                     {/* Mode badge */}
                     <div className={`absolute -top-2.5 left-3 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border transition-all duration-300 ${
                       isBefore
-                        ? 'bg-red-50 text-red-600 border-red-200'
-                        : 'bg-emerald-50 text-emerald-600 border-emerald-200'
+                        ? 'bg-[#FDF2F0] text-[#991B1B] border-[#E8B4A8]'
+                        : 'bg-[#F0FDF4] text-[#166534] border-[#BBF7D0]'
                     }`}>
                       {isBefore ? '⚠ Generic Output' : '✦ Seoscribed'}
                     </div>
@@ -585,23 +585,23 @@ export default function InteractiveDemo() {
                       {isBefore ? (
                         <BeforeText activeCityName={city.city} isVisible={isVisible} key="before-text" />
                       ) : (
-                        <span className="text-zinc-700">
+                        <span className="text-[#1A1A19]">
                           <StreamText segments={city.after} speed={6} key={`after-${cityIdx}`} />
                         </span>
                       )}
                     </div>
 
                     {/* Bottom meta */}
-                    <div className="flex items-center justify-between mt-4 pt-2.5 border-t border-zinc-200/40 text-[10px]">
+                    <div className="flex items-center justify-between mt-4 pt-2.5 border-t border-[#E0DBD2]/40 text-[10px]">
                       {isBefore ? (
-                        <div className="flex items-center gap-1.5 text-red-500">
+                        <div className="flex items-center gap-1.5 text-[#991B1B]">
                           <I.copy className="w-3 h-3" />
                           <span className="font-semibold">Same on all 500 pages</span>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-3 font-mono text-zinc-400">
+                        <div className="flex items-center gap-3 font-mono text-[#A39E95]">
                           <span className="flex items-center gap-1">
-                            <I.spark className="w-3 h-3 text-amber-500" />
+                            <I.spark className="w-3 h-3 text-[#C2410C]" />
                             {city.after.filter(s => s.h).length} local references
                           </span>
                         </div>
@@ -613,13 +613,13 @@ export default function InteractiveDemo() {
                   {manualMode && (
                     <div className="mt-3 flex items-center gap-4">
                       {isAfter && (
-                        <button onClick={toggleToBefore} className="flex items-center gap-1.5 text-[11px] text-zinc-400 hover:text-zinc-600 font-medium transition-colors">
+                        <button onClick={toggleToBefore} className="flex items-center gap-1.5 text-[11px] text-[#A39E95] hover:text-[#706B63] font-medium transition-colors">
                           <I.swap className="w-3 h-3" />
                           Show generic version
                         </button>
                       )}
                       {isBefore && (
-                        <button onClick={toggleToAfter} className="flex items-center gap-1.5 text-[11px] text-indigo-600 hover:text-indigo-700 font-bold transition-colors group">
+                        <button onClick={toggleToAfter} className="flex items-center gap-1.5 text-[11px] text-[#C2410C] hover:text-[#9A3412] font-bold transition-colors group">
                           <I.spark className="w-3.5 h-3.5" />
                           See Seoscribed output
                           <I.arrow className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
@@ -637,7 +637,7 @@ export default function InteractiveDemo() {
               </div>
 
               {/* Mobile: gauge + dots */}
-              <div className="flex sm:hidden items-center justify-around mt-4 pt-4 border-t border-zinc-100">
+              <div className="flex sm:hidden items-center justify-around mt-4 pt-4 border-t border-[#E0DBD2]/50">
                 <ScoreGauge score={city.unique} isBefore={isBefore} />
                 <DotGrid isBefore={isBefore} />
               </div>
@@ -647,7 +647,7 @@ export default function InteractiveDemo() {
       </div>
 
       {/* Hint text */}
-      <p className="text-center mt-4 text-[11px] text-zinc-400 flex items-center justify-center gap-1.5 font-medium">
+      <p className="text-center mt-4 text-[11px] text-[#A39E95] flex items-center justify-center gap-1.5 font-medium">
         {hint.icon}
         {hint.text}
       </p>

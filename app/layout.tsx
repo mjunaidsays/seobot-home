@@ -5,7 +5,7 @@ import { PropsWithChildren, Suspense } from 'react';
 import { getURL } from '@/utils/helpers';
 import 'styles/main.css';
 import { cn } from '@/utils/cn';
-import { Inter as FontSans, Instrument_Serif as FontDisplay } from 'next/font/google';
+import { Outfit as FontSans, Bricolage_Grotesque as FontDisplay } from 'next/font/google';
 import { JetBrains_Mono as FontMono } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import { PostHogProviderComponent } from '@/components/PostHogProvider';
@@ -13,26 +13,25 @@ import AttributionCapture from '@/components/AttributionCapture';
 
 const fontSans = FontSans({
   subsets: ['latin'],
-  weight: ['400', '600', '700'], // Reduced from 6 weights to 3 for better performance
+  weight: ['400', '500', '600', '700'],
   variable: '--font-sans',
-  display: 'swap', // Improves visual stability during font loading
+  display: 'swap',
   preload: true
 });
 
 const fontMono = FontMono({
   subsets: ['latin'],
-  weight: ['400', '600'], // Only include weights we actually use
+  weight: ['400', '600'],
   variable: '--font-mono',
   display: 'swap',
-  preload: false // Only preload if used above-the-fold
+  preload: false
 });
 
 const fontDisplay = FontDisplay({
   subsets: ['latin'],
-  weight: '400',
-  style: ['normal', 'italic'],
+  weight: ['400', '600', '700', '800'],
   display: 'swap',
-  variable: '--font-instrument-serif',
+  variable: '--font-display',
   preload: true
 });
 

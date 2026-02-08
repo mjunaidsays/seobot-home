@@ -155,7 +155,7 @@ export default function BetaSignupForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3 mb-5">
       <input
-        className="w-full px-5 py-4 bg-slate-800 border border-slate-600 rounded-lg text-white text-base placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+        className="w-full px-5 py-4 bg-[#141413] border border-[#3A3A37] rounded-lg text-white text-base placeholder-[#706B63] focus:outline-none focus:ring-2 focus:ring-[#C2410C] focus:border-transparent transition-all"
         placeholder="Your email address"
         type="email"
         required
@@ -171,7 +171,7 @@ export default function BetaSignupForm() {
         <div className="text-red-400 text-sm px-1">{formError}</div>
       )}
       <button
-        className="w-full px-5 py-4 bg-white text-slate-900 font-bold text-base rounded-lg hover:bg-slate-100 transition-all flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full px-5 py-4 bg-[#C2410C] text-white font-bold text-base rounded-lg hover:bg-[#9A3412] transition-all flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
         type="submit"
         disabled={isSubmitting}
       >
