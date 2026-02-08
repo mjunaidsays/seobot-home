@@ -66,7 +66,7 @@ export default function Home() {
           </div>
 
           {/* Qualifier */}
-          <p className="text-sm text-[#A39E95] font-medium mb-6">For directory founders scaling location pages across hundreds of cities.</p>
+          <p className="text-base text-[#706B63] font-medium mb-6">For directory founders scaling location pages across hundreds of cities.</p>
 
           {/* Headline */}
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[1.08] mb-6 text-[#1A1A19] font-display tracking-tight">
@@ -130,19 +130,19 @@ export default function Home() {
                 <h3 className="font-bold text-[#A39E95] text-sm tracking-wide uppercase font-sans">Current Workflow</h3>
               </div>
               <ul className="space-y-4">
-                <li className="flex gap-3 text-[#706B63] text-sm">
+                <li className="flex gap-3 text-[#706B63] text-base">
                   <span className="material-icons-outlined text-[#C2410C]/50 text-base mt-0.5">remove_circle_outline</span>
                   <span>Three weeks of copy-pasting city names into ChatGPT. Page 1 and page 47 read identically.</span>
                 </li>
-                <li className="flex gap-3 text-[#706B63] text-sm">
+                <li className="flex gap-3 text-[#706B63] text-base">
                   <span className="material-icons-outlined text-[#C2410C]/50 text-base mt-0.5">remove_circle_outline</span>
                   <span>Every page opens with &quot;Welcome to {"{City}"}, where you&apos;ll find...&quot; — and Google notices.</span>
                 </li>
-                <li className="flex gap-3 text-[#706B63] text-sm">
+                <li className="flex gap-3 text-[#706B63] text-base">
                   <span className="material-icons-outlined text-[#C2410C]/50 text-base mt-0.5">remove_circle_outline</span>
                   <span>$15,000 to freelancers who deliver the same filler with different city names swapped in.</span>
                 </li>
-                <li className="flex gap-3 text-[#706B63] text-sm">
+                <li className="flex gap-3 text-[#706B63] text-base">
                   <span className="material-icons-outlined text-[#991B1B]/60 text-base mt-0.5">warning</span>
                   <span>You check Search Console. Most of your pages aren&apos;t even indexed. Duplicate content penalty.</span>
                 </li>
@@ -215,7 +215,7 @@ export default function Home() {
               <div className="text-[10px] font-bold text-[#991B1B] uppercase tracking-wider mb-3 flex items-center gap-1.5">
                 <span className="material-icons-outlined text-xs">close</span> ChatGPT Output — Austin, TX
               </div>
-              <p className="text-sm text-[#706B63] leading-relaxed italic">
+              <p className="text-base text-[#706B63] leading-relaxed italic">
                 &quot;Welcome to Austin, TX, where you&apos;ll find a wide range of quality dental providers. Austin is known for its vibrant culture and growing population. Whether you need a routine cleaning or cosmetic dentistry, Austin has many great options to choose from...&quot;
               </p>
             </div>
@@ -223,7 +223,7 @@ export default function Home() {
               <div className="text-[10px] font-bold text-[#166534] uppercase tracking-wider mb-3 flex items-center gap-1.5">
                 <span className="material-icons-outlined text-xs">check</span> Seoscribed Output — Austin, TX
               </div>
-              <p className="text-sm text-[#1A1A19] leading-relaxed italic">
+              <p className="text-base text-[#1A1A19] leading-relaxed italic">
                 &quot;From Austin&apos;s vibrant South Congress district to family practices expanding near Round Rock and Cedar Park, the city&apos;s 964,000 residents have access to a growing network fueled by UT Austin&apos;s dental school pipeline...&quot;
               </p>
             </div>
@@ -255,27 +255,27 @@ export default function Home() {
           {/* Access card */}
           <div id="get-access" className="max-w-md mx-auto bg-white/5 border border-white/10 rounded-2xl p-6 mb-10 backdrop-blur-sm scroll-mt-8">
 
-            <p className="text-xs text-[#C2410C] font-bold uppercase tracking-wider mb-6">Free Beta Access Includes</p>
+            <p className="text-sm text-[#C2410C] font-bold uppercase tracking-wider mb-6">Free Beta Access Includes</p>
 
             {/* Value stack */}
             <div className="space-y-3 text-left mb-6">
-              <div className="flex items-center gap-3 text-sm text-[#A39E95]">
+              <div className="flex items-center gap-3 text-base text-[#A39E95]">
                 <span className="material-icons-outlined text-[#166534] text-base">check_circle</span>
                 Unlimited page generation
               </div>
-              <div className="flex items-center gap-3 text-sm text-[#A39E95]">
+              <div className="flex items-center gap-3 text-base text-[#A39E95]">
                 <span className="material-icons-outlined text-[#166534] text-base">check_circle</span>
                 Built-in uniqueness scoring per page
               </div>
-              <div className="flex items-center gap-3 text-sm text-[#A39E95]">
+              <div className="flex items-center gap-3 text-base text-[#A39E95]">
                 <span className="material-icons-outlined text-[#166534] text-base">check_circle</span>
                 Direct CMS push (WordPress, Webflow, more)
               </div>
-              <div className="flex items-center gap-3 text-sm text-[#A39E95]">
+              <div className="flex items-center gap-3 text-base text-[#A39E95]">
                 <span className="material-icons-outlined text-[#166534] text-base">check_circle</span>
                 Free sample page for your niche within 24 hours
               </div>
-              <div className="flex items-center gap-3 text-sm text-[#A39E95]">
+              <div className="flex items-center gap-3 text-base text-[#A39E95]">
                 <span className="material-icons-outlined text-[#166534] text-base">check_circle</span>
                 Priority support & feature requests
               </div>
@@ -284,7 +284,7 @@ export default function Home() {
             {/* EMAIL + CTA */}
             <BetaSignupForm />
 
-            <p className="text-xs text-[#706B63] mt-3">No credit card. No commitment. If the output doesn&apos;t meet your standard, just walk away.</p>
+            <p className="text-sm text-[#A39E95] mt-3">No credit card. No commitment. If the output doesn&apos;t meet your standard, just walk away.</p>
           </div>
 
           {/* Scarcity */}
@@ -293,7 +293,7 @@ export default function Home() {
               <div className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-pulse"></div>
               Beta limited to 75 founding members
             </div>
-            <p className="text-xs text-[#706B63] mt-3 max-w-sm mx-auto">Capped at 75 to maintain generation quality and give every founding member hands-on support.</p>
+            <p className="text-sm text-[#A39E95] mt-3 max-w-sm mx-auto">Capped at 75 to maintain generation quality and give every founding member hands-on support.</p>
           </div>
 
         </div>
@@ -313,10 +313,10 @@ export default function Home() {
           <div className="space-y-4">
             <div className="bg-white rounded-lg p-6 border border-[#E0DBD2]">
               <div className="flex gap-4">
-                <span className="text-[#C2410C] font-bold text-sm mt-0.5">1</span>
+                <span className="text-[#C2410C] font-bold text-base mt-0.5">1</span>
                 <div>
-                  <h4 className="font-bold text-[#1A1A19] text-sm mb-2 font-sans">How is this different from ChatGPT?</h4>
-                  <p className="text-sm text-[#706B63] leading-relaxed">
+                  <h4 className="font-bold text-[#1A1A19] text-base mb-2 font-sans">How is this different from ChatGPT?</h4>
+                  <p className="text-base text-[#706B63] leading-relaxed">
                     ChatGPT generates one page at a time. Loop it with a script and every page still sounds the same. Seoscribed pulls real local context — landmarks, neighborhoods, demographics — to make each page genuinely distinct.
                   </p>
                 </div>
@@ -324,10 +324,10 @@ export default function Home() {
             </div>
             <div className="bg-white rounded-lg p-6 border border-[#E0DBD2]">
               <div className="flex gap-4">
-                <span className="text-[#C2410C] font-bold text-sm mt-0.5">2</span>
+                <span className="text-[#C2410C] font-bold text-base mt-0.5">2</span>
                 <div>
-                  <h4 className="font-bold text-[#1A1A19] text-sm mb-2 font-sans">Will Google flag AI-generated content?</h4>
-                  <p className="text-sm text-[#706B63] leading-relaxed">
+                  <h4 className="font-bold text-[#1A1A19] text-base mb-2 font-sans">Will Google flag AI-generated content?</h4>
+                  <p className="text-base text-[#706B63] leading-relaxed">
                     Google penalizes duplicate content, not AI content itself. Every page gets a uniqueness score before publish. If any page is too similar to another, you&apos;ll see it first.
                   </p>
                 </div>
@@ -335,10 +335,10 @@ export default function Home() {
             </div>
             <div className="bg-white rounded-lg p-6 border border-[#E0DBD2]">
               <div className="flex gap-4">
-                <span className="text-[#C2410C] font-bold text-sm mt-0.5">3</span>
+                <span className="text-[#C2410C] font-bold text-base mt-0.5">3</span>
                 <div>
-                  <h4 className="font-bold text-[#1A1A19] text-sm mb-2 font-sans">Can I see a sample before I decide?</h4>
-                  <p className="text-sm text-[#706B63] leading-relaxed">
+                  <h4 className="font-bold text-[#1A1A19] text-base mb-2 font-sans">Can I see a sample before I decide?</h4>
+                  <p className="text-base text-[#706B63] leading-relaxed">
                     Yes. Every founding member gets a free sample page generated for their niche within 24 hours of signing up. If the output doesn&apos;t meet your standard, no commitment — you&apos;re in beta, not a contract.
                   </p>
                 </div>
@@ -364,7 +364,6 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center text-xs text-[#706B63]">
             <div className="flex flex-col items-center md:items-start gap-1">
               <p>© 2026 Seoscribed. All rights reserved.</p>
-              <p className="text-[#A39E95]/50">Built by Ahmad S., who scaled two directories to 10,000+ monthly organic visits.</p>
             </div>
             <div className="flex gap-6 mt-4 md:mt-0">
               <a className="hover:text-white transition-colors" href="/privacy">Privacy Policy</a>
