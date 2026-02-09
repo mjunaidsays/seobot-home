@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import ThankYouContent from './ThankYouContent'
+import Logo from "@/components/Logo"
 
 export const metadata: Metadata = {
   title: 'Thank You | Seoscribed',
@@ -12,10 +13,7 @@ export default function ThankYouPage() {
       {/* NAV — Same as landing page */}
       <nav className="sticky top-0 z-50 bg-[#F8F6F1]/80 backdrop-blur-md border-b border-[#E0DBD2]">
         <div className="max-w-[1120px] mx-auto px-6 h-16 flex items-center">
-          <a href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#C2410C] text-white rounded-lg flex items-center justify-center font-bold font-sans">S</div>
-            <span className="font-semibold text-lg tracking-tight text-[#1A1A19]">Seoscribed</span>
-          </a>
+          <Logo href="/" />
         </div>
       </nav>
 

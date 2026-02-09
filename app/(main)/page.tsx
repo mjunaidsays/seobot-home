@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import BetaSignupForm from "@/components/BetaSignupForm";
+import Logo from "@/components/Logo";
 
 const InteractiveDemo = dynamic(
   () => import("@/components/InteractiveDemo"),
@@ -46,10 +47,7 @@ export default function Home() {
       {/* ============================================================ */}
       <nav className="sticky top-0 z-50 bg-[#F8F6F1]/80 backdrop-blur-md border-b border-[#E0DBD2]">
         <div className="max-w-[1120px] mx-auto px-6 h-16 flex items-center">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-[#C2410C] text-white rounded-lg flex items-center justify-center font-bold font-sans text-sm">S</div>
-            <span className="font-semibold text-lg tracking-tight text-[#1A1A19]">Seoscribed</span>
-          </div>
+          <Logo />
         </div>
       </nav>
 

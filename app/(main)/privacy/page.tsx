@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import Logo from "@/components/Logo"
 
 export const metadata: Metadata = {
   title: 'Privacy Policy | Seoscribed',
@@ -14,10 +15,7 @@ export default function PrivacyPage() {
       {/* NAV */}
       <nav className="sticky top-0 z-50 bg-background-light/80 backdrop-blur-md border-b border-border-light">
         <div className="max-w-[1120px] mx-auto px-6 h-16 flex items-center">
-          <a href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-black text-white rounded-lg flex items-center justify-center font-bold font-sans">S</div>
-            <span className="font-semibold text-lg tracking-tight text-slate-900">Seoscribed</span>
-          </a>
+          <Logo href="/" />
         </div>
       </nav>
 
