@@ -54,7 +54,7 @@ export default function Home() {
       {/* ============================================================ */}
       {/* HERO                                                          */}
       {/* ============================================================ */}
-      <section data-track-section="hero" className="pt-24 pb-20 overflow-hidden">
+      <section id="hero" data-track-section="hero" className="pt-24 pb-20 overflow-hidden">
         <div className="max-w-[1120px] mx-auto px-6 text-center">
 
           {/* Badge */}
@@ -105,7 +105,7 @@ export default function Home() {
       {/* ============================================================ */}
       {/* PROBLEM / COMPARISON                                          */}
       {/* ============================================================ */}
-      <section data-track-section="problem" className="py-28 bg-[#F8F6F1] overflow-hidden">
+      <section id="problem" data-track-section="problem" className="py-28 bg-[#F8F6F1] overflow-hidden">
         <div className="max-w-[1120px] mx-auto px-6">
           <div className="text-center mb-16">
             <span className="text-[#C2410C] font-bold text-xs uppercase tracking-widest mb-3 block font-sans">Why your pages aren&apos;t ranking</span>
@@ -235,7 +235,7 @@ export default function Home() {
       {/* ============================================================ */}
       {/* OFFER — Free beta access                                      */}
       {/* ============================================================ */}
-      <section data-track-section="offer" className="py-28 bg-[#141413] text-white relative overflow-hidden">
+      <section id="offer" data-track-section="offer" className="py-28 bg-[#141413] text-white relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1 bg-gradient-to-r from-[#C2410C] via-[#9A3412] to-[#C2410C] opacity-60"></div>
         <div className="max-w-[1120px] mx-auto px-6 text-center relative z-10">
 
@@ -300,7 +300,7 @@ export default function Home() {
       {/* ============================================================ */}
       {/* FAQ                                                            */}
       {/* ============================================================ */}
-      <section data-track-section="faq" className="py-28 bg-[#F8F6F1]">
+      <section id="faq" data-track-section="faq" className="py-28 bg-[#F8F6F1]">
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-16">
             <span className="text-[#C2410C] font-bold text-xs uppercase tracking-widest mb-3 block font-sans">Before you commit</span>
